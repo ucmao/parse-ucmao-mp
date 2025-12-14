@@ -1,0 +1,95 @@
+<view class="header">
+    <text class="header-text">素材热度排行</text>
+</view>
+<view class="container">
+  <view class="search-history">
+    <view class="search-bar">
+      <view class="search-input-container">
+        <input class="search-input" placeholder="搜素材" value="{{inputValue}}" bindinput="onSearchInput"/>
+        <button class="clear-button" wx:if="{{inputValue}}" bindtap="onClearSearch"><text class="clear-text">×</text></button>
+      </view>
+      <button class="search-button" bindtap="onSearchButtonTap"><image src="../../images/search-icon.png" class="batch-icon" /></button>
+    </view>
+    <view class="tab-bar">
+      <scroll-view scroll-x="true" class="scroll-container" enable-flex="true">
+        <view class="tab-row">
+          <!-- <view class="tab-item {{currentPeriod === 'today' ? 'active' : ''}}" bindtap="switchPeriod" data-period="today">今天</view>
+          <view class="tab-item {{currentPeriod === 'yesterday' ? 'active' : ''}}" bindtap="switchPeriod" data-period="yesterday">昨天</view> -->
+          <view class="tab-item {{currentPeriod === '7days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="7days">近7天</view>
+          <view class="tab-item {{currentPeriod === '30days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="30days">近30天</view>
+          <!-- <view class="tab-item {{currentPeriod === 'thisMonth' ? 'active' : ''}}" bindtap="switchPeriod" data-period="thisMonth">本月</view>
+          <view class="tab-item {{currentPeriod === 'lastMonth' ? 'active' : ''}}" bindtap="switchPeriod" data-period="lastMonth">上月</view> -->
+          <!-- <view class="tab-item {{currentPeriod === '60days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="60days">近60天</view> -->
+          <view class="tab-item {{currentPeriod === '90days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="90days">近90天</view>
+          <view class="tab-item {{currentPeriod === '180days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="180days">近半年</view>
+          <view class="tab-item {{currentPeriod === '365days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="365days">近一年</view>
+          <view class="tab-item {{currentPeriod === 'all' ? 'active' : ''}}" bindtap="switchPeriod" data-period="all">全部</view>
+        </view>
+      </scroll-view>
+      <view class="divider"></view>
+      <button class="batch-button" bindtap="toggleBatchMode" wx:if="{{!batchMode}}">
+        批量
+        <image src="../../images/batch_up.png" mode="aspectFit" class="batch-icon" />
+      </button>
+      <button class="batch-button" bindtap="toggleBatchMode" wx:if="{{batchMode}}">
+        批量
+        <image src="../../images/batch_down.png" mode="aspectFit" class="batch-icon" />
+      </button>
+    </view>
+    <view class="batch-actions" wx:if="{{batchMode}}">
+      <scroll-view scroll-x="true" class="scroll-container" enable-flex="true">
+        <view class="tab-row">
+          <button class="batch_selection_button" bindtap="selectAll">全选</button>
+          <button class="batch_selection_button" bindtap="selectInverse">反选</button>
+          <!-- <button class="batch_selection_button" bindtap="clearSelection">清空</button> -->
+          <button class="batch-action-button" bindtap="batchCopyTitles">标题</button>
+          <button class="batch-action-button" bindtap="batchCopyCoverUrls">封面</button>
+          <button class="batch-action-button" bindtap="batchCopyVideoUrls">视频</button>
+          <button class="batch-action-button" bindtap="batchCopyAll">标题/链接</button>
+        </view>
+      </scroll-view>
+    </view>
+    <scroll-view scroll-y class="history-list" bindscrolltolower="loadMore" style="height: 500px;" enable-flex="true">
+      <checkbox-group bindchange="toggleSelection">
+        <block wx:for="{{visibleVideos}}" wx:key="index">
+          <view class="video-item" id="video-item-{{index}}">
+            <view class="checkbox-container" wx:if="{{batchMode}}">
+              <checkbox value="{{index}}" checked="{{item.checked}}" />
+            </view>
+            <view class="history-item" bindlongpress="showHiddenConfirm" data-index="{{index}}">
+              <view class="cover-container">
+                <image class="cover-image" src="{{item.cover_url}}" mode="aspectFill" binderror="onImageErrorCover" data-index="{{index}}"></image>
+                <view class="cover-overlay"></view>
+                <view class="play-button" bindtap="openVideo" data-url="{{item.video_url}}" data-cover="{{item.cover_url}}" data-videoid="{{item.video_id}}" data-title="{{item.title}}" data-index="{{index}}" wx:if="{{item.showItem}}">
+                  <image class="play-icon" mode="aspectFit"></image>
+                </view>
+                <!-- 隐藏的 video 标签 -->
+                <video wx:if="{{!item.loaded}}" id="hiddenVideo-{{item.video_id}}" src="{{item.video_url}}" hidden="{{true}}" autoplay="{{false}}" bindloadedmetadata="onVideoLoadedMetadata" binderror="onVideoError" data-video-id="{{item.video_id}}"></video>
+              </view>
+              <view class="content">
+                <view class="title-container">
+                  <view class="platform-badge">
+                    <text class="platform-text">{{item.platform}}</text>
+                  </view>
+                  <text class="title">{{item.title}}</text>
+                  <image class="copy-button" src="../../images/copy-icon.png" bindtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
+                </view>
+                <view class="actions">
+                  <text class="query-count">热度：{{item.query_count}}</text>
+                  <button class="refresh-button" bindtap="RefreshVideo" data-video-id="{{item.video_id}}" data-platform="{{item.platform}}" wx:if="{{!item.showItem}}" disabled="{{batchMode}}">重新获取</button>
+                  <button class="action-button" bindtap="downloadCover" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.showItem}}" disabled="{{batchMode}}">喵封面</button>
+                  <button class="action-button" bindtap="downloadVideo" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.showItem}}" disabled="{{batchMode}}">喵视频</button>
+                </view>
+              </view>
+            </view>
+            <view class="index-label">
+              <text class="index-text">{{index + 1}}</text>
+            </view>
+          </view>
+        </block>
+      </checkbox-group>
+      <view wx:if="{{loading}}">加载中...</view>
+      <view wx:if="{{!loading && noMoreData}}">没有更多数据了</view>
+    </scroll-view>
+  </view>
+</view>

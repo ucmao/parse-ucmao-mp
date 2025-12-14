@@ -1,0 +1,41 @@
+<view wx:if="{{hasParams}}">
+  <view class="video-player-container">
+    <cover-view class="scroll-text-container">
+      <cover-view class="scroll-text">
+        该视频仅可用于观赏和浏览之目的。视频的版权完全归属于原平台所有，本小程序不会存储任何数字影像资料。观赏者在观看视频过程中，应严格遵守相关法律法规，若出现任何违反法律法规的行为，均与本小程序无任何关联。
+      </cover-view>
+    </cover-view>
+    <video
+      id="video"
+      controls="{{true}}"
+      loop="{{true}}"
+      muted="{{false}}"
+      show-fullscreen-btn="{{true}}"
+      class="video-player"
+      src="{{videoUrl}}"
+      bindfullscreenchange="onFullScreenChange"
+      autoplay="{{true}}"
+    ></video>
+    <!-- 返回按钮 -->
+    <button class="close-button" bindtap="closeVideo">返回</button>
+    <!-- 标题容器 -->
+    <view class="video-title-container">
+      <text class="video-title">{{truncatedTitle}}</text>
+    </view>
+    <!-- 操作按钮区域 -->
+    <view class="action-buttons">
+      <button class="share-button" open-type="share">
+        <image src="../../images/share-icon.png" class="share-icon" />
+      </button>
+      <button class="downloads-button" bindtap="downloadVideo">
+        <image src="../../images/downloads-icon.png" class="downloads-icon" />
+      </button>
+    </view>
+  </view>
+</view>
+
+<view wx:else>
+  <!-- 返回按钮 -->
+  <button class="close-button" bindtap="closeVideo">返回</button>
+  <image src="../../images/default-cover.png" class="no-video-image" />
+</view>

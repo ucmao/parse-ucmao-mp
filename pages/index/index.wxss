@@ -1,0 +1,285 @@
+/* pages/index/index.wxss */
+.gray-background {
+  background-color: #f7f8fa; /* 灰色背景 */
+  padding: 15px;
+}
+
+.white-background {
+  background-color: #F0F8FF; /* 爱丽丝蓝背景 */
+  padding: 15px;
+  padding-bottom: 50px;
+}
+
+.warning-message {
+  background-color: #fbf1ef; /* 更浅的粉色背景 */
+  color: #d24a54; /* 更浅的红色文字 */
+  padding: 8px;  
+  margin-bottom: 10px;  
+  font-size: 12px;
+  border-radius: 8px;
+  display: flex; /* 使用 flex 布局 */  
+  align-items: center; /* 垂直居中对齐 */  
+  overflow: hidden; /* 隐藏超出容器的内容 */
+}
+
+.warning-icon-container {
+  flex-shrink: 0; /* 防止图标容器收缩 */
+}
+
+.warning-icon {
+  display: block; /* 使图标在容器内垂直居中 */
+}
+
+.warning-text-container {
+  flex-grow: 1; /* 允许文本容器扩展 */
+  overflow: hidden; /* 隐藏超出容器的文本 */  
+  position: relative; /* 为动画提供定位上下文 */  
+}
+
+.warning-text {
+  display: inline-block; /* 使文本成为内联块元素 */
+  white-space: nowrap; /* 防止文本换行 */  
+  animation: scroll 50s linear infinite; /* 设置动画属性 */
+}
+
+@keyframes scroll {  
+  0% {  
+    transform: translateX(0); /* 从右侧开始 */  
+  }  
+  100% {  
+    transform: translateX(-100%); /* 向左移动 */  
+  }  
+}
+
+.support-platforms {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.support-platforms-text {
+  font-size: 12px;
+  color: #858688;
+}
+
+.question-icon {
+  width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  vertical-align: middle; /* 确保图标上下居中 */
+  cursor: pointer;
+}
+
+.input-box {
+  padding: 10px;
+  margin-bottom: 10px;
+  height: 120px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  border-radius: 8px;
+  background-color: white; /* 白色背景 */
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.clear-button {
+  background-color: white;
+  color: black;
+  padding: 5px;
+  margin-bottom: 5px;
+  flex: 1;
+  margin-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 2.5;
+}
+
+.clear-button:active {
+  background-color: #f0f0f0; /* 改变背景颜色 */
+  transform: translateY(2px); /* 向下移动一点 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 减少阴影 */
+}
+
+.button {
+  background: linear-gradient(135deg, #43CBFF 10%, #9708CC 100%);
+  color: white;
+  padding: 5px;
+  margin-bottom: 5px;
+  flex: 1;
+  margin-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 2.5;
+}
+
+.button:active {
+  background: linear-gradient(135deg, #3CAED8 10%, #8707B2 100%); /* 改变背景渐变 */
+  transform: translateY(2px); /* 向下移动一点 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 减少阴影 */
+}
+
+.button:last-child {
+  margin-right: 0;
+}
+
+.warning-icon, .success-icon {
+  margin-right: 5px;
+}
+
+.video-container {
+  margin-top: 5px;
+}
+
+.video-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.video-info-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.platform-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin-left: 5px;
+  font-size: 12px;
+  flex-shrink: 0; /* 防止压缩 */
+}
+
+.platform-text {
+  font-size: 10px;
+  color: #fff; /* 修改文字颜色为白色以提高对比度 */
+}
+
+.small-button {
+  font-size: 12px;
+  line-height: 25px;
+  padding: 0 8px;
+  color: green;
+  background: linear-gradient(135deg, #E0FFEB 10%, #C2F7D6 100%);
+}
+
+.button-right {
+  display: flex;
+  gap: 5px; /* 按钮之间的间距 */
+  margin-left: auto;
+}
+
+.centered-video {
+  width: 100%;
+  max-width: 500px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.article-container {
+  margin-top: 10px;
+}
+
+.article-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.article-info-text {
+  font-size: 14px;
+}
+
+.title-box {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background: white; /* 灰色背景 */
+  color: #333;
+  height: auto; /* 设置高度为自动 */
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.save-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+
+.save-cover-button {
+  background-color: white;
+  color: black;
+  padding: 5px;
+  margin-bottom: 5px;
+  flex: 1;
+  margin-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 2.5;
+}
+
+.save-cover-button:active {
+  background-color: #f0f0f0; /* 改变背景颜色 */
+  transform: translateY(2px); /* 向下移动一点 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 减少阴影 */
+}
+
+.save-video-button {
+  background-color: #1296db;
+  color: white;
+  padding: 5px;
+  margin-bottom: 5px;
+  flex: 1;
+  margin-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 2.5;
+}
+
+.save-video-button:active {
+  background-color: #0E7BB5; /* 改变背景颜色 */
+  transform: translateY(2px); /* 向下移动一点 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 减少阴影 */
+}
+
+.share-video-button:active {
+  background-color: #0E7BB5; /* 改变背景颜色 */
+  transform: translateY(2px); /* 向下移动一点 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 减少阴影 */
+}
+
+/* 分享视频按钮 */
+.share-video-button {
+  background-color: #1296db;
+  color: white;
+  padding: 5px;
+  margin-bottom: 5px;
+  flex: 1;
+  margin-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 2.5;
+  display: flex; /* 使用 flex 布局 */
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: center; /* 水平居中对齐 */
+}
+
+/* 分享图标 */
+.share-icon {
+  width: 16px; /* 图标宽度 */
+  height: 16px; /* 图标高度 */
+  margin-right: 5px; /* 图标与文字的间距 */
+}
+
