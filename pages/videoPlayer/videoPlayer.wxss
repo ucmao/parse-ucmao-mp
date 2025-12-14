@@ -1,0 +1,124 @@
+.video-player-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.scroll-text-container {
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0; /* 修改为底部 */
+  left: 0;
+  background-color: rgba(128, 128, 128, 0.8); /* 灰底不透明背景 */
+  color: pink; /* 粉红色文字 */
+  z-index: 1; /* 确保文字在视频上方 */
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.scroll-text {
+  display: inline-block; /* 使文本成为内联块元素 */
+  white-space: nowrap;
+  animation: scrollText 15s linear infinite;
+  will-change: transform; /* 提示浏览器提前准备 */
+  transform: translateZ(0); /* 强制使用硬件加速 */
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+}
+
+.close-button {
+  position: absolute;
+  top: 80px;
+  left: 5px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 0px 25px;
+  border-radius: 30px;
+  font-size: 14px;
+}
+
+/* 分享按钮样式 */
+.share-button {
+  position: absolute;
+  bottom: 150px;
+  right: 15px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 8px 8px;
+  border-radius: 5px;
+  display: flex; /* 使用 Flex 布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+}
+
+/* 分享图标样式 */
+.share-icon {
+  width: 22px; /* 图标宽度 */
+  height: 22px; /* 图标高度 */
+}
+
+/* 下载按钮样式 */
+.downloads-button {
+  position: absolute;
+  bottom: 90px;
+  right: 15px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 6px 6px;
+  border-radius: 5px;
+  display: flex; /* 使用 Flex 布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+}
+
+/* 下载图标样式 */
+.downloads-icon {
+  width: 26px; /* 图标宽度 */
+  height: 26px; /* 图标高度 */
+}
+
+/* 标题容器 */
+.video-title-container {
+  position: absolute; /* 绝对定位 */
+  bottom: 80px; /* 距离底部距离 */
+  left: 10px; /* 距离左侧距离 */
+  padding: 8px 12px; /* 内边距 */
+  border-radius: 4px; /* 圆角 */
+  max-width: 70%; /* 最大宽度 */
+}
+
+/* 标题文字 */
+.video-title {
+  color: #ffffff; /* 文字颜色 */
+  font-size: 14px; /* 文字大小 */
+  line-height: 1.5; /* 行高 */
+  word-break: break-all; /* 长文本换行 */
+}
+
+.no-video-image {
+  width: 300px; /* 设置图片宽度 */
+  height: 300px; /* 设置图片高度 */
+  display: flex; /* 使用 Flexbox 布局 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  margin: auto; /* 自动外边距 */
+  position: absolute; /* 绝对定位 */
+  top: 50%; /* 顶部距离 50% */
+  left: 50%; /* 左侧距离 50% */
+  transform: translate(-50%, -50%); /* 偏移自身宽高的 50% */
+}

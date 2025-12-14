@@ -1,0 +1,72 @@
+# 微信小程序开发工具生成的文件
+.project
+.sitemap.json
+.project.private.json
+project.private.config.json
+.settings/
+.tern-project
+.eslintrc.js
+.prettierrc
+.prettierignore
+.jshintrc
+.types
+*.sublime-*
+
+# 小程序编译生成的文件
+dist/
+build/
+miniprogram_npm/
+npm/
+unpackage/
+
+# 依赖相关
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 环境配置文件（可能包含敏感信息）
+.env
+.env.*
+.env.local
+.env.*.local
+config.local.js
+private.key
+*.pem
+
+# 日志和缓存文件
+logs/
+*.log
+.cache/
+tmp/
+temp/
+
+# 编辑器/IDE相关文件
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# 微信开发者工具调试相关
+debug.log
+debug/
+*.crx
+*.xpi
+
+# 测试相关
+__tests__/
+coverage/
+
+# 自定义构建脚本生成的临时文件
+script-temp/
+*.tmp
+*.bak
+
+# 其他可能的临时文件
+*.local
+*.log.*
+*~

@@ -1,0 +1,64 @@
+<view class="container">
+  <view class="gray-background">
+    <view class="warning-message" bindtap="showDisclaimer">
+      <view class="warning-icon-container">
+        <text class="warning-icon">📢</text>
+      </view>
+      <view class="warning-text-container">
+        <text class="warning-text" user-select="{{true}}">优创猫作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归平台所有。优创猫致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。</text>
+      </view>
+    </view>
+    <view class="support-platforms">
+      <text class="support-platforms-text">支持平台：某音,某手,红薯,毕里,好看,威视,梨等短视频</text>
+      <image src="../../images/question-icon.png" class="question-icon" bindtap="navigateToQuestions"></image>
+    </view>
+    <textarea placeholder="请复制上述平台的分享链接到文本框" bindinput="onInput" value="{{inputValue}}" class="input-box" />
+    <view class="button-group">
+      <button bindtap="clearAndPaste" class="clear-button">
+        <view wx:if="{{isClearMode}}">清空内容</view>
+        <view wx:else>粘贴内容</view>
+      </button>
+      <button bindtap="onSubmit" class="button" disabled="{{isButtonDisabled}}">
+        <view wx:if="{{!isLoading}}">喵去水印（免费）</view>
+        <view wx:else>
+          <text>正在处理...</text>
+          <text class="loading-icon">⏳</text>
+        </view>
+      </button>
+    </view>
+  </view>
+  <view wx:if="{{showWhiteBackground}}" class="white-background">
+    <view wx:if="{{showVideo}}" class="video-container">
+      <view class="video-info">
+        <text class="success-icon">✅</text>
+        <text class="video-info-text">视频已去除水印</text>
+        <view class="platform-badge">
+          <text class="platform-text">{{response.platform}}</text>
+        </view>
+        <view class="button-right">
+          <!-- <button bindtap="viewCoverImage" class="small-button">查看封面</button> -->
+          <button bindtap="copyCoverUrl" class="small-button">封面链接</button>
+        </view>
+      </view>
+      <video src="{{response.video_url}}" controls autoplay="{{false}}" class="centered-video"></video>
+    </view>
+    <view wx:if="{{showArticle}}" class="article-container">
+      <view class="article-info">
+        <text class="video-info-text">视频标题</text>
+        <view class="button-right">
+          <button bindtap="copyTitle" class="small-button">复制文案</button>
+          <button bindtap="copyVideoUrl" class="small-button">视频链接</button>
+        </view>
+      </view>
+      <textarea value="{{response.title}}" class="title-box" disabled auto-height />
+    </view>
+    <view wx:if="{{showSaveCoverButton}}" class="save-buttons-container">
+      <button bindtap="downloadCover" class="save-cover-button">保存封面</button>
+      <button bindtap="downloadVideo" class="save-video-button">保存视频</button>
+      <button open-type="share" class="share-video-button">
+        <image src="../../images/share-icon.png" class="share-icon" />
+        <text>分享视频</text>
+      </button>
+    </view>
+  </view>
+</view>

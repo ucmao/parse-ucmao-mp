@@ -1,0 +1,17 @@
+<view class="header">
+    <text class="header-text">热门问题与解答</text>
+</view>
+<view class="container">
+  <view class="qa-item" wx:for="{{questions}}" wx:key="id">
+    <view class="question" bindtap="toggleAnswer" data-index="{{index}}">
+      <text class="question-number">{{index + 1}}.</text>
+      <text class="question-text">{{item.question}}</text>
+      <text class="arrow">{{item.showAnswer ? '▼' : '►'}}</text>
+    </view>
+    <view class="answer" wx:if="{{item.showAnswer}}">
+      <text>{{item.answer}}</text>
+    </view>
+  </view>
+  <!-- 添加联系客服按钮 -->
+  <button class="contact-button" open-type="contact" bindcontact="handleContact">联系客服</button>
+</view>

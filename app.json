@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/ranking/ranking",
+    "pages/user/user",
+    "pages/videoPlayer/videoPlayer",
+    "pages/questions/questions"
+  ],
+  "window": {
+    "navigationBarTitleText": "优创猫去水印"
+  },
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "喵去水印",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/ranking/ranking",
+        "text": "热门榜单",
+        "iconPath": "images/ranking.png",
+        "selectedIconPath": "images/ranking-active.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "个人中心",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user-active.png"
+      }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents"
+}
