@@ -1,190 +1,132 @@
-# 优创猫去水印 小程序（parse-ucmao-mp）
+<div align="center">
 
-**一个功能强大的短视频去水印微信小程序前端代码，支持多个主流短视频平台。**
+<img src="images/logo.png" width="120" height="auto" alt="优创猫去水印 Logo">
 
-> 本仓库仅包含前端（小程序）代码。后端 API 接口实现请参考 [后端仓库链接](https://github.com/ucmao/parse-ucmao-backend)。
+# 🚀 优创猫去水印 (parse-ucmao-mp)
 
----
+**高性能多平台短视频去水印微信小程序前端**
 
-## 📱 立即体验与总览 ✨
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-微信小程序-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8+%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
 
-欢迎扫码体验本项目的实际功能和效果。
+<p align="center">
+<a href="#📱-立即体验">立即体验</a> •
+<a href="#💎-核心功能逻辑">功能逻辑</a> •
+<a href="#🚀-快速开始">部署指南</a> •
+<a href="[https://github.com/ucmao/parse-ucmao-mp/issues](https://www.google.com/search?q=https://github.com/ucmao/parse-ucmao-mp/issues)">提交Bug</a>
+</p>
 
-| 扫码体验正式版 | 后端服务仓库 |
-| :---: | :---: |
-| ![优创猫去水印太阳码](qr_code.jpg) | 🚀 [优创猫去水印后端服务 (Python)](https://github.com/ucmao/parse-ucmao-backend) |
+优创猫去水印是一款专为创作者打造的**短视频素材获取工具**。
 
-### 🎯 核心功能
 
-- ✅ **多平台支持**：支持抖音、快手、小红书、哔哩哔哩、好看视频、微视、梨视频、皮皮搞笑等。
-- 🎬 **视频去水印**：快速去除视频水印，保留原始画质。
-- 💾 **视频下载**：支持将去水印后的视频保存到本地相册。
-- 📊 **热门榜单 & 封面获取**：提供热门视频榜单和封面提取功能。
 
----
 
-## 🛠️ 技术栈与架构
+通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
 
-| 部分 | 描述 |
-| :--- | :--- |
-| **框架** | **微信小程序原生开发** |
-| **基础库** | 3.10.1+ |
-| **语言** | JavaScript, WXML, WXSS |
-| **构建** | 微信开发者工具 |
-| **后端** | 需对接外部 API 服务（请参考后端仓库） |
+</div>
 
 ---
 
-## 🚀 快速启动（Frontend）
+## 📱 立即体验
 
-本项目为微信小程序前端代码，需要配合微信开发者工具进行开发和运行。
+欢迎扫码体验本项目的实际功能和效果：
 
-### 🚨 重要配置警告
+* **🧩 小程序端**：请扫描下方太阳码进行体验
+* **⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
 
-为确保代码安全和通用性，请在本地运行前进行以下替换：
+<p align="center">
+<img src="qr_code.jpg" width="200" alt="优创猫去水印太阳码">
+</p>
 
-1.  **替换 AppID：**
-    - 将 `project.config.json` 中的 `AppID` 替换为 **你自己的小程序 AppID**。
-2.  **配置 API 域名：**
-    - 修改 `utils/request.js` 中定义的 **后端 API 域名**，指向你自己的后端服务地址。
-3.  **清除敏感信息：**
-    - 确保你的本地版本中没有包含任何 App Secret 或其他密钥。
-
-### 安装步骤
-
-1.  **克隆项目**
-    ```bash
-    # 克隆前端仓库
-    git clone https://github.com/ucmao/parse-ucmao-mp.git
-    cd parse-ucmao-mp
-    ```
-
-2.  **导入项目**
-    - 打开**微信开发者工具**。
-    - 点击「导入」按钮，选择本项目目录。
-    - 填写你自己的 **AppID**。
-
-3.  **运行项目**
-    - 在开发者工具中点击「编译」按钮即可运行。
+> **协作提示**：本仓库仅包含前端小程序代码。如需实现核心解析功能，请配合部署上述后端服务。
 
 ---
 
-## 📁 项目结构概览
+## 💎 核心功能逻辑
 
-项目结构清晰，按照功能进行划分：
+* **多平台解析支持**：全面覆盖抖音、快手、小红书、B站、皮皮搞笑等 8+ 主流平台。
+* **无损去水印流程**：
+* **智能提取**：粘贴分享链接后，前端通过加密机制调用后端 `/api/parse` 接口。
+* **高清下载**：支持将处理后的无水印视频或封面直接保存至手机系统相册。
+
+
+* **安全请求机制**：
+* **动态加密**：采用 **Vigenère 加密算法** 配合动态时间戳生成密钥，确保接口调用安全。
+* **请求封装**：所有 API 请求均通过 `utils/request.js` 进行统一拦截与加密处理。
+
+
+* **内容生态功能**：内置热门视频榜单展示及常见问题指引，提升用户留存与交互体验。
+
+---
+
+## 💾 技术栈矩阵
+
+| 维度 | 技术选型 | 说明 |
+| --- | --- | --- |
+| **底层框架** | **微信小程序原生框架** | 确保最佳性能与原生交互体验 |
+| **核心语言** | JavaScript, WXML, WXSS | 标准小程序开发技术栈 |
+| **基础库版本** | 3.10.1+ | 适配最新微信 API 特性 |
+| **安全层** | Vigenère 加密算法 | 基于时间戳的请求安全校验 |
+| **构建工具** | 微信开发者工具 | 官方标准开发与调试环境 |
+
+---
+
+## 🚀 快速开始
+
+### 1. 🚨 重要配置警告
+
+在运行项目前，请务必完成以下替换：
+
+* **AppID**：在 `project.config.json` 中填入你自己的微信小程序 AppID。
+* **API 域名**：修改 `utils/request.js` 中的后端地址，指向你部署好的后端服务。
+
+### 2. 获取源码
+
+```bash
+git clone https://github.com/ucmao/parse-ucmao-mp.git
+cd parse-ucmao-mp
 
 ```
+
+### 3. 导入项目
+
+1. 打开 **微信开发者工具**。
+2. 点击 **「导入」**，选择本项目根目录。
+3. 确认 AppID 无误后点击导入。
+
+### 4. 预览调试
+
+点击工具上方的 **「编译」** 按钮，即可在模拟器中体验去水印流程。
+
+---
+
+## 📂 项目结构
+
+```text
 parse_ucmao_mp/
-├── app.js              # 小程序入口文件
-├── app.json            # 小程序全局配置
-├── app.wxss            # 小程序全局样式
-├── images/             # 图片资源
-├── pages/              # 页面目录
-│   ├── index/          # 首页
-│   ├── ranking/        # 热门榜单
-│   ├── user/           # 个人中心
-│   ├── videoPlayer/    # 视频播放器
-│   └── questions/      # 常见问题
-├── utils/              # 工具函数
-│   ├── clipboard.js    # 剪贴板操作
-│   ├── file.js         # 文件操作
-│   ├── request.js      # 网络请求
-│   ├── score.js        # 评分系统
-│   ├── storage.js      # 本地存储
-│   ├── time.js         # 时间处理
-│   ├── ui.js           # UI组件
-│   └── util.js         # 通用工具
-├── project.config.json # 项目配置
-├── sitemap.json        # 小程序SEO配置
-├── LICENSE             # MIT许可证
-├── .gitignore          # Git忽略文件
-└── README.md           # 项目说明
+├── pages/                  # 业务页面目录
+│   ├── index/             # 首页：链接输入与解析核心页
+│   ├── ranking/           # 榜单：热门视频展示
+│   ├── videoPlayer/       # 播放：预览去水印后的视频
+│   └── user/              # 我的：个人中心与设置
+├── utils/                 # 工具类封装
+│   ├── request.js         # 核心：封装加密请求机制
+│   ├── file.js            # 功能：处理文件下载与相册保存
+│   ├── clipboard.js       # 辅助：处理剪贴板粘贴逻辑
+│   └── util.js            # 算法：加密算法与字符串处理
+├── images/                 # 静态资源图标与背景
+├── app.js/json/wxss        # 小程序全局逻辑、配置与样式
+└── project.config.json     # 开发者工具项目配置文件
+
 ```
 
-### 目录和文件说明
-
-**根目录文件：**
-- `app.js`：小程序入口文件，负责初始化应用实例，处理全局生命周期
-- `app.json`：小程序全局配置，包括页面路径、窗口样式、底部tabBar等
-- `app.wxss`：小程序全局样式，定义应用级别的样式规则
-- `project.config.json`：项目配置文件，保存微信开发者工具的配置信息
-- `sitemap.json`：小程序SEO配置，控制小程序页面是否被索引
-
-**功能目录：**
-- `images/`：存放小程序使用的所有图片资源，包括图标、背景图等
-- `pages/`：存放小程序的所有页面，每个页面包含.js、.json、.wxml、.wxss四个文件
-  - `index/`：首页，提供视频链接输入和去水印功能
-  - `ranking/`：热门榜单页面，展示热门视频列表
-  - `user/`：个人中心页面，管理用户信息和权益
-  - `videoPlayer/`：视频播放页面，用于预览去水印后的视频
-  - `questions/`：常见问题页面，提供用户帮助
-- `utils/`：存放通用工具函数，提高代码复用性
-  - `clipboard.js`：处理剪贴板操作的工具函数
-  - `file.js`：处理文件下载和保存的工具函数
-  - `request.js`：封装网络请求，包含加密机制
-  - `score.js`：处理评分和积分相关的工具函数
-  - `storage.js`：封装本地存储操作
-  - `time.js`：提供时间处理和格式化功能
-  - `ui.js`：封装统一的UI组件和提示函数
-  - `util.js`：通用工具函数集合，如字符串处理、加密算法等
 ---
 
-## 🌟 技术亮点与核心实现
+## ⚖️ 开源协议 & 免责声明
 
-### 视频去水印流程解析
-
-这是一个异步 API 调用的经典流程：
-
-1.  用户粘贴并提交分享链接。
-2.  前端通过 `utils/request.js` 调用 `/api/parse` 接口。
-3.  后端完成链接解析、水印去除和视频下载。
-4.  前端接收去水印后的视频链接，提供下载给用户。
-
-### 请求加密机制 (安全层)
-
--   使用 **Vigenère 加密算法** 对请求数据进行加密。
--   基于时间戳生成动态密钥，提高接口安全性。
--   所有请求均通过 `request.js` 进行封装和发送。
-
-### 后端 API 接口（示例）
-
-请注意，以下接口的实现位于后端仓库中：
-
--   `/api/login` - 用户登录鉴权
--   `/api/parse` - **核心视频解析和去水印接口**
--   `/api/ranking` - 获取热门榜单数据
+1. 本项目基于 **[MIT LICENSE](LICENSE)** 协议开源。
+2. **免责声明**：本项目仅供技术研究和学习交流使用。严禁用于任何违反法律法规的行为，由滥用本项目造成的后果由使用者自行承担。
 
 ---
 
-## 📝 使用指南
-
-1.  **去除水印：** 复制短视频平台的分享链接，打开小程序，点击「粘贴内容」后，点击「喵去水印」按钮。
-2.  **保存视频/封面：** 处理完成后，点击「保存」按钮授权下载到相册。
-
----
-
-## 🤝 贡献与交流
-
-欢迎任何形式的贡献，包括功能请求、Bug 报告和 Pull Request！
-
-### 提交规范
-
-- 提交代码前请确保通过语法检查
-- 提交信息请使用清晰的描述，如：`fix: 修复数据库连接错误`
-
----
-
-## 📄 许可证
-
-本项目采用 **MIT License** 开源，详情请参阅 [LICENSE](LICENSE) 文件。
-
-## 📧 联系方式
-
-如有任何问题或建议：
-
-- 邮箱：leoucmao@gmail.com
-- GitHub：https://github.com/ucmao
-
----
-
-**Enjoy coding with 优创猫去水印小程序！** 🎉
+**优创猫去水印** - 高效解析，赋能创作。 🎬✨
+[提交 Bug](https://www.google.com/search?q=https://github.com/ucmao/parse-ucmao-mp/issues) | [联系作者](mailto:leoucmao@gmail.com)
