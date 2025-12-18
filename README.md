@@ -9,9 +9,9 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-微信小程序-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8+%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
 
 <p align="center">
-<a href="#📱-立即体验">立即体验</a> •
-<a href="#💎-核心功能逻辑">功能逻辑</a> •
-<a href="#🚀-快速开始">部署指南</a> •
+<a href="#-立即体验">立即体验</a> •
+<a href="#-核心功能逻辑">功能逻辑</a> •
+<a href="#-快速开始">部署指南</a> •
 <a href="[https://github.com/ucmao/parse-ucmao-mp/issues](https://www.google.com/search?q=https://github.com/ucmao/parse-ucmao-mp/issues)">提交Bug</a>
 </p>
 
