@@ -102,7 +102,7 @@ cd parse-ucmao-mp
 ## 📂 项目结构
 
 ```text
-parse_ucmao_mp/
+parse-ucmao-mp/
 ├── pages/                  # 业务页面目录
 │   ├── index/             # 首页：链接输入与解析核心页
 │   ├── ranking/           # 榜单：热门视频展示
@@ -121,12 +121,22 @@ parse_ucmao_mp/
 
 ---
 
+## 📩 联系作者
+
+如果您在安装、使用过程中遇到问题，或有定制需求，请通过以下方式联系：
+
+* **微信 (WeChat)**：csdnxr
+* **QQ**：294323976
+* **邮箱 (Email)**：leoucmao@gmail.com
+* **Bug反馈**：[GitHub Issues](https://github.com/ucmao/parse-ucmao-mp/issues)
+
+---
+
 ## ⚖️ 开源协议 & 免责声明
 
 1. 本项目基于 **[MIT LICENSE](LICENSE)** 协议开源。
 2. **免责声明**：本项目仅供技术研究和学习交流使用。严禁用于任何违反法律法规的行为，由滥用本项目造成的后果由使用者自行承担。
 
----
-
 **优创猫去水印** - 高效解析，赋能创作。 🎬✨
-[提交 Bug](https://www.google.com/search?q=https://github.com/ucmao/parse-ucmao-mp/issues) | [联系作者](mailto:leoucmao@gmail.com)
+
+---
