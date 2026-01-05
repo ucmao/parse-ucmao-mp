@@ -1,3 +1,5 @@
+import config from './utils/config.js';
+
 App({
   async onLaunch() {
     try {
@@ -28,7 +30,7 @@ App({
     try {
       const response = await new Promise((resolve, reject) => {
         wx.request({
-          url: 'https://parse.ucmao.cn/api/login', // 替换为你的服务器地址
+          url: `${config.baseURL}/api/login`, 
           method: 'POST',
           data: {
             code: code
@@ -40,8 +42,18 @@ App({
       
       console.log('服务器响应:', response.data);
       if (response.data && response.data.openid) {
-        wx.setStorageSync('openid', response.data.openid);
-        return response.data.openid;
+        const { openid, nickname, avatar_url } = response.data;
+        wx.setStorageSync('openid', openid);
+        
+        // 如果后端有昵称和头像，同步到本地缓存
+        if (nickname || avatar_url) {
+          const userInfo = wx.getStorageSync('userInfo') || {};
+          if (nickname) userInfo.nickName = nickname;
+          if (avatar_url) userInfo.avatarUrl = avatar_url;
+          wx.setStorageSync('userInfo', userInfo);
+        }
+        
+        return openid;
       } else {
         console.error('服务器响应中没有 openid');
         throw new Error('服务器响应中没有 openid');
