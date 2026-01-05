@@ -1,8 +1,10 @@
 <view class="container">
   <view class="user-info">
-    <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onImageError"   bindtap="showActionSheet" />
+    <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onImageError" />
+    </button>
     <view class="nickname-container">
-      <text class="nickname" bindtap="editNickname">{{userInfo.nickName}}</text>
+      <input type="nickname" class="nickname-input" value="{{userInfo.nickName}}" placeholder="点击输入或获取昵称" bindblur="onNicknameChange" bindconfirm="onNicknameChange" />
     </view>
   </view>
   <view class="search-history">

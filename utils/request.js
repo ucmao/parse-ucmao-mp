@@ -1,12 +1,6 @@
 import { generateComplexText, vigenereEncrypt, timestampToLetters } from './util.js';
 import { generateTimestamp } from './time.js';
-
-// 配置项
-const config = {
-  baseURL: 'https://parse.ucmao.cn',
-  timeout: 15000, // 请求超时时间（毫秒）
-  maxRetries: 1   // 最大重试次数
-};
+import config from './config.js';
 
 // 生成请求头信息
 function generateHeaders() {

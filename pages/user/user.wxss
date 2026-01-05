@@ -12,21 +12,36 @@
   margin-bottom: 20px;
 }
 
-.avatar {
-  width: 80px;
-  height: 80px;
+.avatar-wrapper {
+  padding: 0;
+  width: 80px !important;
+  height: 80px !important;
   border-radius: 50%;
   margin-bottom: 10px;
+  background: none;
+  border: none;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
 }
 
 .nickname-container {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.nickname {
+.nickname-input {
   font-size: 18px;
   color: #333;
+  text-align: center;
+  width: 80%;
+  height: 30px;
 }
 
 .benefits-icon {

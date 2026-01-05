@@ -1,4 +1,5 @@
 import { request } from '../../utils/request';
+import config from '../../utils/config.js';
 import { getUserInfo, getBenefitsInfo, updateStorageCurrent } from '../../utils/storage';
 import { copyToClipboard } from '../../utils/clipboard';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
@@ -437,7 +438,68 @@ Page({
     });
   },
 
+  // 处理头像选择 (微信原生头像选择)
+  onChooseAvatar: function(e) {
+    const avatarUrl = e.detail.avatarUrl;
+    this.uploadAvatar(avatarUrl);
+  },
+
+  // 上传头像到服务器
+  uploadAvatar: function(tempFilePath) {
+    showToast('正在上传...', 'loading');
+    
+    wx.uploadFile({
+      url: `${config.baseURL}/api/upload_avatar`,
+      filePath: tempFilePath,
+      name: 'file',
+      header: {
+        'WX-OPEN-ID': wx.getStorageSync('openid')
+      },
+      success: (uploadRes) => {
+        const data = JSON.parse(uploadRes.data);
+        if (data.success) {
+          const permanentUrl = data.url;
+          const updatedUserInfo = {
+            ...this.data.userInfo,
+            avatarUrl: permanentUrl
+          };
+          
+          this.setData({
+            'userInfo': updatedUserInfo
+          });
+          wx.setStorageSync('userInfo', updatedUserInfo);
+          this.syncUserInfo(updatedUserInfo);
+          showToast('头像已更新');
+        } else {
+          showToast('上传失败: ' + data.message, 'none');
+        }
+      },
+      fail: (err) => {
+        console.error('上传头像失败:', err);
+        showToast('网络错误，上传失败', 'none');
+      }
+    });
+  },
+
+  // 处理昵称变化 (微信原生昵称填入)
+  onNicknameChange: function(e) {
+    const newNickname = e.detail.value;
+    if (newNickname && newNickname !== this.data.userInfo.nickName) {
+      const updatedUserInfo = {
+        ...this.data.userInfo,
+        nickName: newNickname
+      };
+      this.setData({
+        'userInfo': updatedUserInfo
+      });
+      wx.setStorageSync('userInfo', updatedUserInfo);
+      this.syncUserInfo(updatedUserInfo);
+      showToast('昵称已更新');
+    }
+  },
+
   showActionSheet: function() {
+    // 保留原有的手动选择功能，作为备选
     wx.showActionSheet({
       itemList: ['从相册选择', '拍照'],
       success: (res) => {
@@ -446,9 +508,6 @@ Page({
         } else if (res.tapIndex === 1) {
           this.chooseImage('camera');
         }
-      },
-      fail: (res) => {
-        console.log(res.errMsg);
       }
     });
   },
@@ -459,24 +518,13 @@ Page({
       mediaType: ['image'],
       sourceType: [sourceType],
       success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath; // 获取临时文件路径
-        const updatedUserInfo = {
-          ...this.data.userInfo,
-          avatarUrl: tempFilePath
-        };
-        this.setData({
-          'userInfo': updatedUserInfo // 更新头像
-        });
-        wx.setStorageSync('userInfo', updatedUserInfo); // 保存到本地存储
-      },
-      fail: (res) => {
-        console.log('选择图片失败', res);
+        this.uploadAvatar(res.tempFiles[0].tempFilePath);
       }
     });
   },
 
   editNickname: function() {
-    showConfirmModal('更改昵称', '请输入新的昵称', (res) => {
+    showConfirmModal('更改昵称', '', (res) => {
       if (res.confirm) {
         const newNickname = res.content;
         if (newNickname) {
@@ -488,11 +536,25 @@ Page({
             'userInfo': updatedUserInfo
           });
           wx.setStorageSync('userInfo', updatedUserInfo);
+          this.syncUserInfo(updatedUserInfo); // 同步到服务器
         } else {
           showToast('昵称不能为空', 'none');
         }
       }
     }, { editable: true, placeholderText: '新的昵称' });
+  },
+
+  syncUserInfo: function(userInfo) {
+    request('/api/upload_userinfo', {
+      method: 'POST',
+      data: {
+        userInfo: userInfo
+      }
+    }).then(res => {
+      console.log('用户信息同步成功');
+    }).catch(err => {
+      console.error('用户信息同步失败:', err);
+    });
   },
 
   navigateToQuestions: function() {

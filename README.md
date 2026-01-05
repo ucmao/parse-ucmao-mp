@@ -12,7 +12,7 @@
 <a href="#-立即体验">立即体验</a> •
 <a href="#-核心功能逻辑">功能逻辑</a> •
 <a href="#-快速开始">部署指南</a> •
-<a href="[https://github.com/ucmao/parse-ucmao-mp/issues](https://www.google.com/search?q=https://github.com/ucmao/parse-ucmao-mp/issues)">提交Bug</a>
+<a href="#-联系作者">联系作者</a>
 </p>
 
 优创猫去水印是一款专为创作者打造的**短视频素材获取工具**。
@@ -77,7 +77,7 @@
 在运行项目前，请务必完成以下替换：
 
 * **AppID**：在 `project.config.json` 中填入你自己的微信小程序 AppID。
-* **API 域名**：修改 `utils/request.js` 中的后端地址，指向你部署好的后端服务。
+* **API 域名**：修改 `utils/config.js` 中的 `baseURL`，指向你部署好的后端服务地址。
 
 ### 2. 获取源码
 
