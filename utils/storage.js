@@ -1,4 +1,4 @@
-const DEFAULT_AVATAR_URL = '../../images/default-avatar.webp';
+const DEFAULT_AVATAR_URL = '../../images/default-avatar.png';
 const DEFAULT_NICKNAME = '用户昵称';
 
 // 读取用户信息

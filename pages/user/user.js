@@ -9,7 +9,7 @@ import { showToast, showConfirmModal } from '../../utils/ui';
 Page({
   data: {
     userInfo: {},
-    defaultCoverUrl: '../../images/default-cover.webp', // 默认封面图片路径
+    defaultCoverUrl: '../../images/default-cover.png', // 默认封面图片路径
     periods: [
       { value: 'today', label: '今天' },
       { value: 'yesterday', label: '昨天' },

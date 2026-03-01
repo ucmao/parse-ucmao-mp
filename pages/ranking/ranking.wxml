@@ -7,7 +7,7 @@
   <view class="top-wrap-content">
     <view class="search-bar-wrap">
       <view class="search-bar">
-        <image class="search-bar-cat" src="../../images/cat.webp" mode="aspectFit" />
+        <image class="search-bar-cat" src="../../images/cat.png" mode="aspectFit" />
         <view class="search-input-container">
         <input class="search-input" placeholder="搜素材" value="{{inputValue}}" bindinput="onSearchInput"/>
         <button class="clear-button" wx:if="{{inputValue}}" bindtap="onClearSearch"><text class="clear-text">×</text></button>
