@@ -213,8 +213,8 @@ page {
 .footer-card {
   margin-top: 32px;
   background: #e9f4ff; /* 浅蓝色背景 */
-  padding: 16px 20px;
-  border-radius: 18px;
+  padding: 10px 16px;
+  border-radius: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -230,31 +230,31 @@ page {
 }
 
 .footer-card-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #1296db;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .footer-card-desc {
-  font-size: 11px;
+  font-size: 10px;
   color: #5ea8d0;
 }
 
 .footer-card-right {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
 }
 
 .footer-cat-peek {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   position: absolute;
-  right: -10px;
-  bottom: -15px;
+  right: -8px;
+  bottom: -10px;
   opacity: 0.8;
   transform: rotate(-10deg);
 }

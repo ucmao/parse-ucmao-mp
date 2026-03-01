@@ -5,6 +5,8 @@ Page({
     categories: CATEGORIES,
     currentCategory: '全部',
     searchKeyword: '',
+    statusBarHeight: 0,
+    navBarHeight: 44,
     questions: [
       { id: 1, category: '其他', question: '免责声明与服务公约', answer: 'MiniParse作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归原平台及作者所有。MiniParse致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。', showAnswer: false },
       { id: 2, category: '功能', question: '支持哪些平台的视频去水印？', answer: '目前支持抖音、快手、小红书、哔哩哔哩、微信视频号、梨视频、皮皮虾、好看视频等主流平台。如果遇到不支持的链接，可以联系客服反馈哦～', showAnswer: false },
@@ -24,8 +26,20 @@ Page({
   },
 
   onLoad() {
+    this.setNavSize();
     this.buildTopQuestions();
     this.applyFilters();
+  },
+
+  setNavSize() {
+    const sys = wx.getSystemInfoSync();
+    const statusHeight = sys.statusBarHeight || 0;
+    const navHeight = sys.system.indexOf('iOS') > -1 ? 44 : 48;
+    this.setData({ statusBarHeight: statusHeight, navBarHeight: navHeight });
+  },
+
+  onBack() {
+    wx.navigateBack();
   },
 
   buildTopQuestions() {
@@ -33,7 +47,9 @@ Page({
     const top = questions.slice(0, 4).map((q, i) => ({
       id: q.id,
       question: q.question,
-      index: i
+      index: i,
+      badge: i === 0 ? '必看' : (i === 2 ? '热点' : ''),
+      badgeType: i === 0 ? 'must' : (i === 2 ? 'hot' : '')
     }));
     this.setData({ topQuestions: top });
   },
@@ -89,8 +105,33 @@ Page({
   openQuestionByIndex(e) {
     const index = e.currentTarget.dataset.index;
     const questions = this.data.questions.slice();
+    const targetId = questions[index].id;
     questions[index].showAnswer = true;
-    this.setData({ questions }, () => this.applyFilters());
+    // 先切到「全部」并清空搜索，保证目标问题在列表中，再锚点滚动
+    this.setData({
+      currentCategory: '全部',
+      searchKeyword: '',
+      questions
+    }, () => {
+      this.applyFilters();
+      // 等列表渲染后再滚动到锚点
+      setTimeout(() => this.scrollToQuestion(targetId), 80);
+    });
+  },
+
+  scrollToQuestion(questionId) {
+    const query = wx.createSelectorQuery();
+    query.select('#qa-' + questionId).boundingClientRect();
+    query.selectViewport().scrollOffset();
+    query.exec((res) => {
+      if (res[0] && res[1]) {
+        const scrollTop = res[0].top + res[1].scrollTop - 60;
+        wx.pageScrollTo({
+          scrollTop: Math.max(0, scrollTop),
+          duration: 300
+        });
+      }
+    });
   },
 
   handleContact(e) {

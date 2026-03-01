@@ -1,6 +1,14 @@
-<!-- 顶部：浅色马卡龙渐变 + 居中标题 -->
-<view class="header">
-  <text class="header-text">热门问题与解答</text>
+<!-- 顶部：渐变背景顶到状态栏/导航栏 + 自定义导航 + 标题 -->
+<view class="header-wrap">
+  <view class="custom-nav" style="height: {{statusBarHeight + navBarHeight}}px;">
+    <view class="nav-bar-inner" style="margin-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+      <view class="nav-back" bindtap="onBack">
+        <text class="nav-back-arrow">‹</text>
+      </view>
+      <text class="nav-title-text">热门问题与解答</text>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
 </view>
 
 <view class="container page-body">
@@ -16,7 +24,8 @@
   <!-- 宫格：最常用 4 个问题 -->
   <view class="section-title">常用问题</view>
   <view class="grid-cards">
-    <view class="grid-card" wx:for="{{topQuestions}}" wx:key="id" bindtap="openQuestionByIndex" data-index="{{item.index}}">
+    <view class="grid-card grid-card-{{index}}" wx:for="{{topQuestions}}" wx:key="id" bindtap="openQuestionByIndex" data-index="{{item.index}}">
+      <view class="grid-card-badge grid-card-badge-{{item.badgeType}}" wx:if="{{item.badge}}">{{item.badge}}</view>
       <view class="grid-card-num">{{index + 1}}</view>
       <text class="grid-card-text">{{item.question}}</text>
     </view>
@@ -29,7 +38,7 @@
   </view>
 
   <view class="qa-list">
-    <view class="qa-item" wx:for="{{filteredQuestions}}" wx:key="id">
+    <view class="qa-item" id="qa-{{item.id}}" wx:for="{{filteredQuestions}}" wx:key="id">
       <view class="question-row" bindtap="toggleAnswer" data-index="{{item.dataIndex}}">
         <view class="question-num-wrap">
           <text class="question-num">{{item.displayIndex}}</text>

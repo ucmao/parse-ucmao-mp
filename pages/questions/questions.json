@@ -1,6 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarBackgroundColor": "#FFFFFF",
-  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
   "navigationBarTitleText": "答疑解惑"
 }
