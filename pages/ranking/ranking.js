@@ -7,6 +7,8 @@ import { showToast, showConfirmModal } from '../../utils/ui';
 
 Page({
   data: {
+    statusBarHeight: 0,
+    navBarHeight: 40,
     coverImage: '../../images/cover-image.jpg',
     savingVideo: false,
     downloadProgress: 0,
@@ -37,11 +39,27 @@ Page({
     pageSize: 10,
     loading: false,
     noMoreData: false, // 是否还有更多数据的标志
+    noMoreDataText: '没有更多数据了', // 到底时的提示文案（按是否满100条区分）
+    maintenanceMode: false, // 全站隐身/维护时为 true，用于空状态文案区分
     selectedVideos: [], // 存储用户选择的视频索引
-    batchMode: false // 批量模式开关
+    batchMode: false, // 批量模式开关
+    listHeight: 500 // 列表可视高度，onLoad 时按窗口动态计算
   },
 
   onLoad: function(options) {
+    const sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight || 0 });
+    
+    // 动态计算列表高度：等待渲染完成后测量顶部高度
+    wx.createSelectorQuery().select('.top-wrap').boundingClientRect(rect => {
+      if (rect) {
+        const windowHeight = sys.windowHeight || 600;
+        // 列表高度 = 总高度 - 顶部测量高度 - 容器外间距(20) - 底部安全距离(20)
+        const listHeight = windowHeight - rect.height - 40;
+        this.setData({ listHeight: Math.max(300, listHeight) });
+      }
+    }).exec();
+
     const app = getApp();
     let currentPeriod = '7days';
     let searchQuery = '';
@@ -79,9 +97,11 @@ Page({
       if (res.retcode === 200 && res.ranking) {
         this.setData({
           rankingData: res.ranking,
+          maintenanceMode: !!res.ranking.maintenance_mode,
           page: 1,
           visibleVideos: [],
-          noMoreData: false
+          noMoreData: false,
+          noMoreDataText: '没有更多数据了'
         });
         this.loadData(); // 加载第一页数据
       } else {
@@ -101,7 +121,8 @@ Page({
       currentPeriod: period,
       page: 1,
       visibleVideos: [],
-      noMoreData: false
+      noMoreData: false,
+      noMoreDataText: '没有更多数据了'
     });
     this.loadData();
   },
@@ -127,9 +148,15 @@ Page({
         loading: false
       });
     } else {
+      // 当前时段/搜索下实际条数达到后端上限(100)时提示“前100条”，否则“没有更多数据了”
+      const totalCount = filteredVideos.length;
+      const noMoreDataText = totalCount >= 100
+        ? '已展示前 100 条，更多可尝试其他关键词或时间范围'
+        : '没有更多数据了';
       this.setData({
         loading: false,
-        noMoreData: true
+        noMoreData: true,
+        noMoreDataText
       });
     }
   },
@@ -157,12 +184,14 @@ Page({
   downloadCover: function(e) {
     const coverUrl = e.currentTarget.dataset.coverUrl;
     const videoId = e.currentTarget.dataset.videoId;
-    showConfirmModal('确认下载', '您确定要下载封面吗？', async () => {
-      try {
-        await downloadCoverToPhotosAlbum(coverUrl, true);
-        uploadScore([videoId], 'imageDownload');
-      } catch (error) {
-        this.handleDownloadError(error, coverUrl, '封面');
+    showConfirmModal('确认下载', '您确定要下载封面吗？', async (res) => {
+      if (res.confirm) {
+        try {
+          await downloadCoverToPhotosAlbum(coverUrl, true);
+          uploadScore([videoId], 'imageDownload');
+        } catch (error) {
+          this.handleDownloadError(error, coverUrl, '封面');
+        }
       }
     });
   },

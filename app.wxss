@@ -1,10 +1,46 @@
-/**app.wxss**/
-/* .container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
+/**app.wxss - MiniParse 全局设计 token 与基础样式 **/
+
+/* 设计 token（极简精致流：统一圆角 大容器18px/按钮10px，细腻阴影） */
+page {
+  --color-primary: #1296db;
+  --color-primary-dark: #0e7bb5;
+  --gradient-primary: linear-gradient(135deg, #5eb8f0 0%, #8b7cc5 100%);
+  --gradient-primary-active: linear-gradient(135deg, #4aa8e0 0%, #7a6bb5 100%);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-subtle: 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-soft-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --radius-btn: 10px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-card: 18px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --spacing-page: 20px;
+  --spacing-card: 16px;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --border-light: rgba(0, 0, 0, 0.06);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", STHeiti, sans-serif;
+}
+
+/* 全局留白：让内容“呼吸” */
+.container {
   box-sizing: border-box;
-}  */
+  padding-left: var(--spacing-page);
+  padding-right: var(--spacing-page);
+  padding-bottom: 40px;
+}
+
+/* 关键数字加粗、说明性文字减淡 */
+.text-emphasis {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.text-muted {
+  color: var(--text-secondary);
+  font-weight: 400;
+}

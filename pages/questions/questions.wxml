@@ -1,17 +1,58 @@
+<!-- 顶部：浅色马卡龙渐变 + 居中标题 -->
 <view class="header">
-    <text class="header-text">热门问题与解答</text>
+  <text class="header-text">热门问题与解答</text>
 </view>
-<view class="container">
-  <view class="qa-item" wx:for="{{questions}}" wx:key="id">
-    <view class="question" bindtap="toggleAnswer" data-index="{{index}}">
-      <text class="question-number">{{index + 1}}.</text>
-      <text class="question-text">{{item.question}}</text>
-      <text class="arrow">{{item.showAnswer ? '▼' : '►'}}</text>
-    </view>
-    <view class="answer" wx:if="{{item.showAnswer}}">
-      <text>{{item.answer}}</text>
+
+<view class="container page-body">
+  <!-- 极简搜索框 -->
+  <view class="search-wrap">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索问题关键词" value="{{searchKeyword}}" bindinput="onSearchInput" placeholder-class="search-placeholder" />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</text>
     </view>
   </view>
-  <!-- 添加联系客服按钮 -->
+
+  <!-- 宫格：最常用 4 个问题 -->
+  <view class="section-title">常用问题</view>
+  <view class="grid-cards">
+    <view class="grid-card" wx:for="{{topQuestions}}" wx:key="id" bindtap="openQuestionByIndex" data-index="{{item.index}}">
+      <view class="grid-card-num">{{index + 1}}</view>
+      <text class="grid-card-text">{{item.question}}</text>
+    </view>
+  </view>
+
+  <!-- 分类列表 -->
+  <view class="section-title">全部分类</view>
+  <view class="category-tabs">
+    <view class="category-tab {{currentCategory === item ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this" bindtap="switchCategory" data-category="{{item}}">{{item}}</view>
+  </view>
+
+  <view class="qa-list">
+    <view class="qa-item" wx:for="{{filteredQuestions}}" wx:key="id">
+      <view class="question-row" bindtap="toggleAnswer" data-index="{{item.dataIndex}}">
+        <view class="question-num-wrap">
+          <text class="question-num">{{item.displayIndex}}</text>
+        </view>
+        <text class="question-text">{{item.question}}</text>
+        <view class="chevron-wrap">
+          <text class="chevron {{item.showAnswer ? 'chevron-down' : ''}}">›</text>
+        </view>
+      </view>
+      <view class="answer-wrap {{item.showAnswer ? 'answer-visible' : ''}}">
+        <view class="answer-inner">
+          <text class="answer-text">{{item.answer}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{filteredQuestions.length === 0}}">暂无相关问题</view>
+  </view>
+
+  <!-- 底部留白，避免被悬浮按钮遮挡 -->
+  <view class="bottom-spacer"></view>
+</view>
+
+<!-- 底部固定悬浮：联系客服（毛玻璃 + 克莱因蓝） -->
+<view class="contact-float">
   <button class="contact-button" open-type="contact" bindcontact="handleContact">联系客服</button>
 </view>

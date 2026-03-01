@@ -33,13 +33,29 @@ Page({
     noMoreData: false, // 是否还有更多数据的标志
     selectedVideos: [], // 存储用户选择的视频索引
     batchMode: false, // 批量模式开关
+    statusBarHeight: 0,
+    navBarHeight: 0,
     storageLimit: 0,
     searchHistoryCount: 0
   },
 
   onLoad: function() {
+    this.setNavSize();
     this.fetchRanking();
     this.updateData();
+  },
+
+  // 计算导航栏高度
+  setNavSize: function() {
+    const sysinfo = wx.getSystemInfoSync();
+    const statusHeight = sysinfo.statusBarHeight;
+    const isiOS = sysinfo.system.indexOf('iOS') > -1;
+    const navHeight = isiOS ? 44 : 48; // iOS 导航栏高度 44，Android 48
+
+    this.setData({
+      statusBarHeight: statusHeight,
+      navBarHeight: navHeight
+    });
   },
 
   onShow: function() {
@@ -239,6 +255,30 @@ Page({
       searchHistory: searchHistory,
       searchHistoryCount: this.data.searchHistoryCount - selectedVideos.length,
       selectedVideos: [] // 清空已选中的视频
+    });
+  },
+
+  onItemTap: function(e) {
+    const index = e.currentTarget.dataset.index;
+    if (this.data.batchMode) {
+      this.toggleItemSelection(index);
+    } else {
+      this.openVideo(e);
+    }
+  },
+
+  toggleItemSelection: function(index) {
+    let { selectedVideos } = this.data;
+    const pos = selectedVideos.indexOf(index);
+    if (pos > -1) {
+      selectedVideos.splice(pos, 1);
+    } else {
+      selectedVideos.push(index);
+    }
+    this.setData({
+      selectedVideos: selectedVideos
+    }, () => {
+      this.updateVisibleVideosCheckedState();
     });
   },
 

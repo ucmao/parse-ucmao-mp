@@ -4,6 +4,7 @@ import { extractUrl, truncateString } from '../../utils/util';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { uploadScore } from '../../utils/score';
 import { showToast, showConfirmModal } from '../../utils/ui';
+import { getUserInfo, getBenefitsInfo, updateStorageCurrent } from '../../utils/storage';
 
 Page({
   data: {
@@ -22,9 +23,105 @@ Page({
       video_url: '',
       title: '',
       cover_url: '',
-      video_id: '' // 确保video_id存在
+      video_id: ''
     },
-    isClearMode: false
+    isClearMode: false,
+    totalCount: 0, // 累计解析数据
+    nickName: '团团', // 用户昵称
+    statusBarHeight: 0,
+    navBarHeight: 0,
+    subSlogan: '哈喽！短视频一键去水印，开启灵感的一天喵！✨',
+    sloganIndex: 0, // 当前提示语索引
+    sloganList: [
+      '发现好作品别忘了分享，让更多人也沾沾这份灵感的光！',
+      '这里是灵感的补给站，仅供个人学习和交流哦～',
+      '每一份素材都凝聚了作者的心血，请务必合法使用，保护版权。',
+      '我们只是影像的搬运工而非储存者，版权仍属于伟大的原作者。',
+      '让我们一起守护清朗的网络空间，共建温暖的小社区。'
+    ],
+  },
+
+  onLoad: function() {
+    this.setNavSize();
+    this.updateDashboard();
+    this.fetchTotalCount();
+  },
+
+  // 计算导航栏高度
+  setNavSize: function() {
+    const sysinfo = wx.getSystemInfoSync();
+    const statusHeight = sysinfo.statusBarHeight;
+    const isiOS = sysinfo.system.indexOf('iOS') > -1;
+    const navHeight = isiOS ? 44 : 48; // iOS 导航栏高度 44，Android 48
+
+    this.setData({
+      statusBarHeight: statusHeight,
+      navBarHeight: navHeight
+    });
+  },
+
+  onShow: function() {
+    this.updateDashboard();
+    this.startSloganLoop();
+  },
+
+  onHide: function() {
+    this.stopSloganLoop();
+  },
+
+  onUnload: function() {
+    this.stopSloganLoop();
+  },
+
+  startSloganLoop: function() {
+    this.stopSloganLoop();
+    // 初始显示第一条
+    this.setData({
+      subSlogan: this.data.sloganList[this.data.sloganIndex]
+    });
+    // 开启 5 秒轮播
+    this.sloganTimer = setInterval(() => {
+      let nextIndex = (this.data.sloganIndex + 1) % this.data.sloganList.length;
+      this.setData({
+        sloganIndex: nextIndex,
+        subSlogan: this.data.sloganList[nextIndex]
+      });
+    }, 5000);
+  },
+
+  stopSloganLoop: function() {
+    if (this.sloganTimer) {
+      clearInterval(this.sloganTimer);
+      this.sloganTimer = null;
+    }
+  },
+
+  updateDashboard: function() {
+    // 从缓存获取用户信息和统计数据
+    const userInfo = getUserInfo();
+    const benefits = getBenefitsInfo();
+    
+    this.setData({
+      nickName: userInfo.nickName || '团团',
+      totalCount: benefits.storageCurrent || 0
+    });
+  },
+
+  fetchTotalCount: function() {
+    request('/api/records', {
+      method: 'POST',
+      data: { searchQuery: '' }
+    })
+    .then(res => {
+      if (res.retcode === 200 && res.ranking) {
+        const count = res.ranking.length || 0;
+        updateStorageCurrent(count);
+        this.setData({ totalCount: count });
+      }
+    })
+    .catch(err => {
+      console.error('Fetch total count error:', err);
+    });
   },
 
   onInput: function(e) {
@@ -33,23 +130,16 @@ Page({
     });
   },
 
-  clearAndPaste: async function() {
-    const isClearMode = this.data.isClearMode;
-    if (isClearMode) {
+  doPaste: async function() {
+    try {
+      const data = await getClipboardData();
       this.setData({
-        inputValue: '',
-        isClearMode: false
+        inputValue: data,
+        isClearMode: true
       });
-    } else {
-      try {
-        const data = await getClipboardData();
-        this.setData({
-          inputValue: data,
-          isClearMode: true
-        });
-      } catch (error) {
-        console.error('获取剪贴板数据失败:', error);
-      }
+      showToast('已粘贴', 'success', 1500);
+    } catch (error) {
+      showToast('剪贴板无内容', 'none', 1500);
     }
   },
   
@@ -117,8 +207,11 @@ Page({
             showCoverButton: !!data.cover_url,
             showSaveVideoButton: !!data.video_url,
             showSaveCoverButton: !!data.cover_url,
-            showWhiteBackground: true
+            showWhiteBackground: true,
+            totalCount: this.data.totalCount + 1 // 解析成功后计数加1
           });
+          // 同时更新本地缓存
+          updateStorageCurrent(this.data.totalCount);
           console.log('data', data);
         }
       }
@@ -144,7 +237,8 @@ Page({
 
   clearInput() {
     this.setData({
-      inputValue: ''
+      inputValue: '',
+      isClearMode: false
     });
   },
 
@@ -280,6 +374,6 @@ Page({
     wx.navigateTo({
       url: '/pages/questions/questions'
     });
-  }
+  },
 
 });

@@ -1,6 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationStyle": "custom",
   "navigationBarTextStyle": "black",
   "navigationBarTitleText": "MiniParse"
 }

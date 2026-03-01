@@ -1,64 +1,121 @@
-<view class="container">
-  <view class="gray-background">
-    <view class="warning-message" bindtap="showDisclaimer">
-      <view class="warning-icon-container">
-        <text class="warning-icon">📢</text>
-      </view>
-      <view class="warning-text-container">
-        <text class="warning-text" user-select="{{true}}">MiniParse作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归平台所有。MiniParse致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。</text>
-      </view>
-    </view>
-    <view class="support-platforms">
-      <text class="support-platforms-text">支持平台：某音,某手,红薯,毕里,好看,威视,梨等短视频</text>
-      <image src="../../images/question-icon.png" class="question-icon" bindtap="navigateToQuestions"></image>
-    </view>
-    <textarea placeholder="请复制上述平台的分享链接到文本框" bindinput="onInput" value="{{inputValue}}" class="input-box" />
-    <view class="button-group">
-      <button bindtap="clearAndPaste" class="clear-button">
-        <view wx:if="{{isClearMode}}">清空内容</view>
-        <view wx:else>粘贴内容</view>
-      </button>
-      <button bindtap="onSubmit" class="button" disabled="{{isButtonDisabled}}">
-        <view wx:if="{{!isLoading}}">喵去水印（免费）</view>
-        <view wx:else>
-          <text>正在处理...</text>
-          <text class="loading-icon">⏳</text>
-        </view>
-      </button>
+<view class="container index-page">
+  <!-- 自定义导航栏：解决背景顶到红框区域的问题 -->
+  <view class="custom-nav" style="height: {{statusBarHeight + navBarHeight}}px;">
+    <view class="nav-title" style="margin-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+      <image class="nav-title-img" src="../../images/title-index.png" mode="heightFix" />
     </view>
   </view>
-  <view wx:if="{{showWhiteBackground}}" class="white-background">
-    <view wx:if="{{showVideo}}" class="video-container">
-      <view class="video-info">
-        <text class="success-icon">✅</text>
-        <text class="video-info-text">视频已去除水印</text>
-        <view class="platform-badge">
-          <text class="platform-text">{{response.platform}}</text>
-        </view>
-        <view class="button-right">
-          <!-- <button bindtap="viewCoverImage" class="small-button">查看封面</button> -->
-          <button bindtap="copyCoverUrl" class="small-button">封面链接</button>
+
+  <!-- 顶部：猫咪管家工作台 -->
+  <view class="dashboard-header">
+    <view class="user-info-box">
+      <image class="mini-avatar" src="../../images/logo.png" mode="aspectFit" />
+      <view class="welcome-box">
+        <text class="user-name">你好，{{nickName || '团团'}}</text>
+        <text class="sub-slogan">{{subSlogan}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="top-section">
+    <!-- 输入区：增加了“厚度感”样式 -->
+    <view class="input-wrap">
+      <textarea
+        placeholder="请复制分享的短视频链接到此处"
+        bindinput="onInput"
+        value="{{inputValue}}"
+        class="input-box"
+        disabled="{{isLoading}}"
+      />
+      <view wx:if="{{!inputValue && !isLoading}}" class="input-paste" bindtap="doPaste">
+        <text class="input-paste-text">粘贴</text>
+      </view>
+      <view wx:elif="{{inputValue && !isLoading}}" class="input-clear" bindtap="clearInput">×</view>
+    </view>
+
+    <!-- 主操作：渐变色 + 向右箭头 -->
+    <button
+      class="main-btn {{isLoading ? 'loading' : ''}}"
+      bindtap="onSubmit"
+      disabled="{{isButtonDisabled}}"
+    >
+      <view wx:if="{{!isLoading}}" class="btn-content">
+        <text>喵去水印（免费）</text>
+        <text class="btn-arrow">→</text>
+      </view>
+      <view wx:else class="loading-inner">
+        <text class="loading-dot">·</text><text class="loading-dot">·</text><text class="loading-dot">·</text>
+      </view>
+    </button>
+  </view>
+
+  <!-- 结果区：卡片式封装 -->
+  <view class="result-section" wx:if="{{showWhiteBackground}}">
+    <view class="result-card">
+      <!-- 视频预览/封面 -->
+      <view class="video-block" wx:if="{{showVideo || showCoverButton}}">
+        <view class="video-glass-label">{{response.platform || '视频素材'}}</view>
+        <image 
+          wx:if="{{showCoverButton && !showVideo}}" 
+          class="result-video" 
+          src="{{response.cover_url}}" 
+          mode="aspectFill" 
+          bindtap="viewCoverImage"
+        />
+        <video 
+          wx:if="{{showVideo}}" 
+          class="result-video" 
+          src="{{response.video_url}}" 
+          poster="{{response.cover_url}}"
+          controls
+        />
+      </view>
+
+      <!-- 标题内容 -->
+      <view class="title-block" wx:if="{{showArticle}}">
+        <text class="title-label">文案内容</text>
+        <text class="title-content" selectable>{{response.title}}</text>
+      </view>
+
+      <!-- 操作矩阵：三个主操作，长方形，前两个 logo 蓝、分享深色 -->
+      <view class="action-matrix">
+        <view class="action-row">
+          <button class="action-btn btn-save" bindtap="downloadVideo" wx:if="{{showSaveVideoButton}}">
+            <image class="action-btn-icon" src="../../images/download_vid.png" />
+            <text>保存视频</text>
+          </button>
+          <button class="action-btn btn-save" bindtap="downloadCover" wx:if="{{showSaveCoverButton}}">
+            <image class="action-btn-icon" src="../../images/download_img.png" />
+            <text>保存封面</text>
+          </button>
+          <button class="action-btn btn-share" open-type="share">
+            <image class="action-btn-icon" src="../../images/share-icon.png" />
+            <text>分享好友</text>
+          </button>
         </view>
       </view>
-      <video src="{{response.video_url}}" controls autoplay="{{false}}" class="centered-video"></video>
-    </view>
-    <view wx:if="{{showArticle}}" class="article-container">
-      <view class="article-info">
-        <text class="video-info-text">视频标题</text>
-        <view class="button-right">
-          <button bindtap="copyTitle" class="small-button">复制文案</button>
-          <button bindtap="copyVideoUrl" class="small-button">视频链接</button>
-        </view>
+
+      <!-- 底部链接复制 -->
+      <view class="copy-links">
+        <text class="copy-link" bindtap="copyTitle">复制标题</text>
+        <text class="copy-sep">|</text>
+        <text class="copy-link" bindtap="copyCoverUrl">复制封面</text>
+        <text class="copy-sep">|</text>
+        <text class="copy-link" bindtap="copyVideoUrl">复制视频</text>
+        <text class="copy-sep">|</text>
+        <text class="copy-link" bindtap="copyAllInfo">复制全部</text>
       </view>
-      <textarea value="{{response.title}}" class="title-box" disabled auto-height />
     </view>
-    <view wx:if="{{showSaveCoverButton}}" class="save-buttons-container">
-      <button bindtap="downloadCover" class="save-cover-button">保存封面</button>
-      <button bindtap="downloadVideo" class="save-video-button">保存视频</button>
-      <button open-type="share" class="share-video-button">
-        <image src="../../images/share-icon.png" class="share-icon" />
-        <text>分享视频</text>
-      </button>
+  </view>
+  
+  <!-- 底部卡片：使用指南 -->
+  <view class="footer-card" bindtap="navigateToQuestions">
+    <view class="footer-card-left">
+      <text class="footer-card-title">使用指南 & 常见问题</text>
+      <text class="footer-card-desc">解决解析失败、保存失败等问题</text>
+    </view>
+    <view class="footer-card-right">
+      <image src="../../images/cat.png" class="footer-cat-peek" mode="aspectFit" />
     </view>
   </view>
 </view>

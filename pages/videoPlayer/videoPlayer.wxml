@@ -15,27 +15,32 @@
       src="{{videoUrl}}"
       bindfullscreenchange="onFullScreenChange"
       autoplay="{{true}}"
-    ></video>
-    <!-- 返回按钮 -->
-    <button class="close-button" bindtap="closeVideo">返回</button>
+    >
+      <cover-view class="video-tips" wx:if="{{showTips}}">
+        <cover-view class="tips-text">轻点屏幕左右拖动可快进/快退</cover-view>
+      </cover-view>
+    </video>
+    <!-- 返回：简洁左箭头 -->
+    <button class="back-button" bindtap="closeVideo">‹</button>
     <!-- 标题容器 -->
-    <view class="video-title-container">
+    <view class="video-title-container" bindlongpress="onCopyTitle">
       <text class="video-title">{{truncatedTitle}}</text>
     </view>
-    <!-- 操作按钮区域 -->
+    <!-- 操作区：右侧垂直排列 + 文字标注 -->
     <view class="action-buttons">
-      <button class="share-button" open-type="share">
-        <image src="../../images/share-icon.png" class="share-icon" />
+      <button class="action-item" open-type="share">
+        <image src="../../images/share-icon.png" class="action-icon" />
+        <text class="action-label">分享</text>
       </button>
-      <button class="downloads-button" bindtap="downloadVideo">
-        <image src="../../images/downloads-icon.png" class="downloads-icon" />
+      <button class="action-item" bindtap="onSaveTap">
+        <image src="../../images/downloads-icon.png" class="action-icon save-icon" />
+        <text class="action-label">保存</text>
       </button>
     </view>
   </view>
 </view>
 
 <view wx:else>
-  <!-- 返回按钮 -->
-  <button class="close-button" bindtap="closeVideo">返回</button>
+  <button class="back-button" bindtap="closeVideo">‹</button>
   <image src="../../images/default-cover.png" class="no-video-image" />
 </view>

@@ -1,5 +1,5 @@
 import { copyToClipboard } from '../../utils/clipboard';
-import { downloadVideoToPhotosAlbum } from '../../utils/file';
+import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { uploadScore } from '../../utils/score';
 import { truncateString } from '../../utils/util';
 
@@ -11,7 +11,8 @@ Page({
     title: '', // 标题内容
     truncatedTitle: '', // 截取后的标题内容
     videoId: '', // 视频ID
-    fromShare: false // 是否从分享进入
+    fromShare: false, // 是否从分享进入
+    showTips: false // 是否显示播放提示
   },
 
   onLoad: function (options) {
@@ -20,6 +21,15 @@ Page({
     const decodedVideoId = videoid ? decodeURIComponent(videoid) : '';
     if (url) {
       uploadScore([decodedVideoId], 'validPlay');
+
+      // 检查是否显示过提示
+      const hasSeenTips = wx.getStorageSync('hasSeenVideoTips');
+      let shouldShowTips = false;
+      if (!hasSeenTips) {
+        shouldShowTips = true;
+        wx.setStorageSync('hasSeenVideoTips', true);
+      }
+
       this.setData({
         videoUrl: decodeURIComponent(url),
         coverUrl: decodeURIComponent(cover),
@@ -27,8 +37,18 @@ Page({
         truncatedTitle: truncateString(decodeURIComponent(title), 79, '...'),
         videoId: decodedVideoId,
         fromShare: fromShare === 'true',
-        hasParams: true
+        hasParams: true,
+        showTips: shouldShowTips
       });
+
+      // 如果需要显示提示，3.5秒后自动隐藏
+      if (shouldShowTips) {
+        setTimeout(() => {
+          this.setData({
+            showTips: false
+          });
+        }, 3500);
+      }
       console.log("videoUrl", this.data.videoUrl);
     } else {
       // 如果没有参数，设置 hasParams 为 false
@@ -116,24 +136,53 @@ Page({
     }
   },
 
-  downloadVideo: function(e) {
+  onSaveTap: function(e) {
     const videoUrl = this.data.videoUrl;
+    const coverUrl = this.data.coverUrl;
     const videoId = this.data.videoId;
-    wx.showModal({
-        title: '确认下载',
-        content: '您确定要下载视频吗？',
-        success: async(res) => {
-          if (res.confirm) {
-            downloadVideoToPhotosAlbum(videoUrl, videoId)
+    
+    wx.showActionSheet({
+      itemList: ['保存封面', '保存视频'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          // 保存封面
+          downloadCoverToPhotosAlbum(coverUrl, true, (error) => {
+            if (error) {
+              console.error('下载封面失败:', error);
+              copyToClipboard(coverUrl, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
+            }
+          });
+        } else if (res.tapIndex === 1) {
+          // 保存视频
+          downloadVideoToPhotosAlbum(videoUrl, videoId)
             .then((message) => {
               uploadScore([videoId], 'videoDownload');
-              wx.showToast({ title: message,icon: 'success' });
+              wx.showToast({ title: message, icon: 'success' });
             })
             .catch((error) => {
               copyToClipboard(videoUrl, { title: '下载失败: 视频地址已复制，您可以尝试手动下载', icon: 'none' });
             });
-          }
         }
+      },
+      fail: (res) => {
+        console.log(res.errMsg);
+      }
+    });
+  },
+
+  onCopyTitle: function() {
+    const title = this.data.title;
+    if (!title) return;
+    
+    wx.showModal({
+      title: '复制文案',
+      content: '是否复制视频标题文案？',
+      confirmText: '复制',
+      success: (res) => {
+        if (res.confirm) {
+          copyToClipboard(title, { title: '文案已复制' });
+        }
+      }
     });
   },
 
