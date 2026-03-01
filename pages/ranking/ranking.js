@@ -16,7 +16,7 @@ Page({
       video_url: '',
       title: ''
     },
-    defaultCoverUrl: '../../images/default-cover.png',
+    defaultCoverUrl: '../../images/default-cover.webp',
     periods: [
       // { value: 'today', label: '今天' },
       // { value: 'yesterday', label: '昨天' },

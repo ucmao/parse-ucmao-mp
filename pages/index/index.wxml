@@ -115,7 +115,7 @@
       <text class="footer-card-desc">解决解析失败、保存失败等问题</text>
     </view>
     <view class="footer-card-right">
-      <image src="../../images/cat.png" class="footer-cat-peek" mode="aspectFit" />
+      <image src="../../images/cat.webp" class="footer-cat-peek" mode="aspectFit" />
     </view>
   </view>
 </view>

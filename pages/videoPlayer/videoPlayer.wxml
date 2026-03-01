@@ -42,5 +42,5 @@
 
 <view wx:else>
   <button class="back-button" bindtap="closeVideo">‹</button>
-  <image src="../../images/default-cover.png" class="no-video-image" />
+  <image src="../../images/default-cover.webp" class="no-video-image" />
 </view>
