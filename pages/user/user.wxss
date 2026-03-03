@@ -43,7 +43,7 @@ page {
 }
 
 .nav-title-img {
-  height: 22px;
+  height: 20px;  /* 略微缩小个人中心标题图高度 */
   width: auto;
   display: block;
 }
@@ -525,6 +525,12 @@ page {
 .grid-time {
   font-size: 11px;
   color: #999;
+}
+
+.grid-heat {
+  font-size: 11px;
+  color: #ff9d00;
+  font-weight: 500;
 }
 
 .checkbox-container {

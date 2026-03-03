@@ -4,7 +4,7 @@ import { extractUrl, truncateString } from '../../utils/util';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { uploadScore } from '../../utils/score';
 import { showToast, showConfirmModal } from '../../utils/ui';
-import { getUserInfo, getBenefitsInfo, updateStorageCurrent } from '../../utils/storage';
+import { updateStorageCurrent } from '../../utils/storage';
 
 Page({
   data: {
@@ -27,23 +27,12 @@ Page({
     },
     isClearMode: false,
     totalCount: 0, // 累计解析数据
-    nickName: '团团', // 用户昵称
     statusBarHeight: 0,
     navBarHeight: 0,
-    subSlogan: '哈喽！短视频一键去水印，开启灵感的一天喵！✨',
-    sloganIndex: 0, // 当前提示语索引
-    sloganList: [
-      '发现好作品别忘了分享，让更多人也沾沾这份灵感的光！',
-      '这里是灵感的补给站，仅供个人学习和交流哦～',
-      '每一份素材都凝聚了作者的心血，请务必合法使用，保护版权。',
-      '我们只是影像的搬运工而非储存者，版权仍属于伟大的原作者。',
-      '让我们一起守护清朗的网络空间，共建温暖的小社区。'
-    ],
   },
 
   onLoad: function() {
     this.setNavSize();
-    this.updateDashboard();
     this.fetchTotalCount();
   },
 
@@ -61,50 +50,13 @@ Page({
   },
 
   onShow: function() {
-    this.updateDashboard();
-    this.startSloganLoop();
+    // 每次进入页面刷新统计
   },
 
   onHide: function() {
-    this.stopSloganLoop();
   },
 
   onUnload: function() {
-    this.stopSloganLoop();
-  },
-
-  startSloganLoop: function() {
-    this.stopSloganLoop();
-    // 初始显示第一条
-    this.setData({
-      subSlogan: this.data.sloganList[this.data.sloganIndex]
-    });
-    // 开启 5 秒轮播
-    this.sloganTimer = setInterval(() => {
-      let nextIndex = (this.data.sloganIndex + 1) % this.data.sloganList.length;
-      this.setData({
-        sloganIndex: nextIndex,
-        subSlogan: this.data.sloganList[nextIndex]
-      });
-    }, 5000);
-  },
-
-  stopSloganLoop: function() {
-    if (this.sloganTimer) {
-      clearInterval(this.sloganTimer);
-      this.sloganTimer = null;
-    }
-  },
-
-  updateDashboard: function() {
-    // 从缓存获取用户信息和统计数据
-    const userInfo = getUserInfo();
-    const benefits = getBenefitsInfo();
-    
-    this.setData({
-      nickName: userInfo.nickName || '团团',
-      totalCount: benefits.storageCurrent || 0
-    });
   },
 
   fetchTotalCount: function() {
@@ -305,7 +257,7 @@ Page({
   },
 
   onShareAppMessage: function () {
-    const { video_url, cover_url, title, video_id } = this.data.response;
+    const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
       return {
         title: `分享视频：${truncateString(title, 30)}`,
@@ -313,6 +265,7 @@ Page({
               `cover=${encodeURIComponent(cover_url)}&`+
               `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
               `videoid=${encodeURIComponent(video_id)}&`+
+              `heat=${encodeURIComponent(heat || 0)}&`+
               `fromShare=true`,
         imageUrl: cover_url,
         success: (res) => {
@@ -338,7 +291,7 @@ Page({
   },
 
   onShareTimeline: function () {
-    const { video_url, cover_url, title, video_id } = this.data.response;
+    const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
       return {
         title: `分享视频: ${truncateString(title, 30)}`,
@@ -346,6 +299,7 @@ Page({
                `cover=${encodeURIComponent(cover_url)}&`+
                `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
                `videoid=${encodeURIComponent(video_id)}&`+
+               `heat=${encodeURIComponent(heat || 0)}&`+
                `fromShare=true`,
         imageUrl: cover_url,
         success: (res) => {

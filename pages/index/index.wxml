@@ -6,13 +6,12 @@
     </view>
   </view>
 
-  <!-- 顶部：猫咪管家工作台 -->
-  <view class="dashboard-header">
-    <view class="user-info-box">
-      <image class="mini-avatar" src="../../images/logo.png" mode="aspectFit" />
-      <view class="welcome-box">
-        <text class="user-name">你好，{{nickName || '团团'}}</text>
-        <text class="sub-slogan">{{subSlogan}}</text>
+  <!-- 顶部：滚动公告栏（点击查看完整说明） -->
+  <view class="notice-bar" bindtap="showDisclaimer">
+    <text class="notice-icon-emoji">📢</text>
+    <view class="notice-content">
+      <view class="notice-text">
+        MiniParse作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归原平台及作者所有。MiniParse致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。
       </view>
     </view>
   </view>
@@ -27,26 +26,31 @@
         class="input-box"
         disabled="{{isLoading}}"
       />
-      <view wx:if="{{!inputValue && !isLoading}}" class="input-paste" bindtap="doPaste">
-        <text class="input-paste-text">粘贴</text>
-      </view>
-      <view wx:elif="{{inputValue && !isLoading}}" class="input-clear" bindtap="clearInput">×</view>
     </view>
 
-    <!-- 主操作：渐变色 + 向右箭头 -->
-    <button
-      class="main-btn {{isLoading ? 'loading' : ''}}"
-      bindtap="onSubmit"
-      disabled="{{isButtonDisabled}}"
-    >
-      <view wx:if="{{!isLoading}}" class="btn-content">
-        <text>喵去水印（免费）</text>
-        <text class="btn-arrow">→</text>
-      </view>
-      <view wx:else class="loading-inner">
-        <text class="loading-dot">·</text><text class="loading-dot">·</text><text class="loading-dot">·</text>
-      </view>
-    </button>
+    <!-- 操作区域：粘贴/清空 + 喵去水印 -->
+    <view class="btn-row">
+      <button 
+        class="action-secondary-btn {{inputValue ? 'btn-clear' : 'btn-paste'}}" 
+        bindtap="{{inputValue ? 'clearInput' : 'doPaste'}}"
+        disabled="{{isLoading}}"
+      >
+        <text>{{inputValue ? '清空内容' : '粘贴内容'}}</text>
+      </button>
+      
+      <button
+        class="main-btn {{isLoading ? 'loading' : ''}}"
+        bindtap="onSubmit"
+        disabled="{{isButtonDisabled}}"
+      >
+        <view wx:if="{{!isLoading}}" class="btn-content">
+          <text>喵去水印（免费）</text>
+        </view>
+        <view wx:else class="loading-inner">
+          <text class="loading-dot">·</text><text class="loading-dot">·</text><text class="loading-dot">·</text>
+        </view>
+      </button>
+    </view>
   </view>
 
   <!-- 结果区：卡片式封装 -->

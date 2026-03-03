@@ -1,6 +1,6 @@
 /* 首页：纯中性浅灰背景，避免卡片间隙透出蓝色 */
 page {
-  background: #f5f6f8;
+  background: var(--bg-page);
   min-height: 100%;
 }
 
@@ -26,55 +26,51 @@ page {
 }
 
 .nav-title-img {
-  height: 22px;
+  height: 18px;  /* 略微缩小标题图高度 */
   width: auto;
   display: block;
 }
 
-/* ---------- 顶部：猫咪管家工作台 ---------- */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* 改为顶部对齐，给长文字留空间 */
-  margin-top: 16px;
-  margin-bottom: 24px;
-  padding: 0 4px;
-}
-
-.user-info-box {
+/* ---------- 顶部：滚动公告栏 ---------- */
+.notice-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  background: #fff3f3; /* 浅粉背景，贴近示例图片 */
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(230, 92, 92, 0.15); /* 微红色描边 */
+  overflow: hidden;
 }
 
-.mini-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px; /* Logo 改为圆角矩形更精致 */
-  background: #fff;
-  padding: 4px;
-  box-sizing: border-box;
-  box-shadow: var(--shadow-soft);
+.notice-icon-emoji {
+  font-size: 15px;
+  margin-right: 6px;
+  flex-shrink: 0;
+  line-height: 20px;
 }
 
-.welcome-box {
-  display: flex;
-  flex-direction: column;
+.notice-content {
+  flex: 1;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
 }
 
-.user-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary);
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #e65c5c; /* 红色系文字，贴近图片 */
+  line-height: 20px;
+  animation: marquee 30s linear infinite;
+  padding-left: 100%; /* 初始从右侧进入 */
 }
 
-.sub-slogan {
-  font-size: 11px;
-  color: #6a7c92; /* 更具质感的深灰蓝，提升背景上的可读性 */
-  margin-top: 4px;
-  line-height: 1.4;
-  max-width: 420rpx; /* 增加一点宽度，让长句能放下但依然支持换行 */
-  display: block;
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ---------- 顶部区域 ---------- */
@@ -91,7 +87,7 @@ page {
 .input-box {
   width: 100%;
   height: 120px;
-  padding: 14px 60px 14px 16px; /* 缩减右侧 padding，释放文本区域 */
+  padding: 14px 16px;
   box-sizing: border-box;
   font-size: 14px;
   line-height: 1.5;
@@ -101,75 +97,65 @@ page {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* 向下的内阴影 */
 }
 
-/* 魔法按钮：更淡的半透明蓝，像「长」在输入框里 */
-.input-paste {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 6px 12px;
-  background: rgba(18, 150, 219, 0.08);
-  border: 1px solid rgba(18, 150, 219, 0.18);
-  border-radius: var(--radius-btn, 10px);
-  z-index: 1;
+/* 操作按钮行：粘贴/清空 + 喵去水印 一左一右并排 */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
-.input-paste:active {
-  background: rgba(18, 150, 219, 0.15);
-}
-
-.input-paste-text {
-  font-size: 12px;
-  color: var(--color-primary);
-  font-weight: 500;
-}
-
-/* 清空：与粘贴同位置，有内容时切换为灰色 × */
-.input-clear {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 28px;
-  height: 28px;
-  line-height: 26px;
-  text-align: center;
-  font-size: 18px;
-  color: var(--text-tertiary);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.input-clear:active {
-  color: var(--text-primary);
-  background: rgba(0, 0, 0, 0.06);
-}
-
-/* ---------- 主按钮：蓝紫色高饱和度渐变 + 向右箭头 ---------- */
-.main-btn {
-  width: 100%;
+.action-secondary-btn {
+  width: 120px;
   height: 52px;
   line-height: 52px;
   padding: 0;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius-btn, 10px);
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dcdfe6; /* 更有质感的边框颜色，增加厚度感 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); /* 增加轻微的立体感 */
+}
+
+/* 粘贴 / 清空：加重灰色深度，增强对比度 */
+.action-secondary-btn.btn-paste,
+.action-secondary-btn.btn-clear {
+  color: #333333;           /* 纯黑偏灰，文字更清晰 */
+  background: #f0f2f5;      /* 稍重的灰背景，让按钮立得住 */
+}
+
+.action-secondary-btn::after {
+  border: none;
+}
+
+.action-secondary-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* ---------- 主按钮：高饱和度蓝色渐变 + 轻阴影 ---------- */
+.main-btn {
+  flex: 1;
+  height: 52px;
+  line-height: 52px;
+  padding: 0;
+  font-size: 15px;
   font-weight: 600;
   color: #fff;
   border: none;
   border-radius: var(--radius-btn, 10px);
-  background: linear-gradient(135deg, #3a8dff 0%, #8e2de2 100%);
-  box-shadow: 0 4px 14px rgba(142, 45, 226, 0.35);
+  background: linear-gradient(135deg, #2f80ed 0%, #0052d4 100%);
+  box-shadow: 0 4px 14px rgba(47, 128, 237, 0.35);
+  margin: 0 !important;
 }
 
 .btn-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-}
-
-.btn-arrow {
-  font-size: 18px;
-  font-weight: 400;
-  margin-top: -2px;
 }
 
 .main-btn::after {
@@ -178,8 +164,8 @@ page {
 
 .main-btn:active {
   transform: scale(0.97);
-  background: linear-gradient(135deg, #2d7ae6 0%, #7b26c3 100%);
-  box-shadow: 0 2px 8px rgba(142, 45, 226, 0.25);
+  background: linear-gradient(135deg, #2569c4 0%, #0041a8 100%);
+  box-shadow: 0 2px 8px rgba(47, 128, 237, 0.3);
 }
 
 .main-btn.loading {
@@ -319,6 +305,8 @@ page {
   color: var(--text-primary);
   line-height: 1.5;
   word-break: break-all;
+  max-height: 140px;      /* 文案过长时限制高度 */
+  overflow-y: auto;       /* 超出部分内部滚动 */
 }
 
 /* 底部操作矩阵：三个主操作，长方形，前两个 logo 蓝、分享深色 */
@@ -339,7 +327,8 @@ page {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 4px;
+  /* 调整内边距：上多一点、下少一点，整体高度不变 */
+  padding: 6px 4px 2px 4px;
   font-size: 12px;
   font-weight: 600;
   border-radius: 14px;

@@ -24,8 +24,7 @@ Page({
     currentPeriod: 'all', // 默认时间范围
     searchQuery: '', // 搜索关键词
     inputValue: '', // 搜索输入框值
-    searchHistory: [],  // 获取本地所有视频数据
-    filteredVideos: [], // 存储筛选后的视频数据
+    searchHistory: {},  // 获取本地所有视频数据
     visibleVideos: [], // 当前可见的视频数据
     page: 1,
     pageSize: 10,
@@ -64,10 +63,12 @@ Page({
 
   fetchRanking: function(searchQuery = '') {
     const that = this;
+    const { currentPeriod } = this.data;
     request('/api/records', {
       method: 'POST',
       data: {
-        searchQuery: searchQuery
+        searchQuery: searchQuery,
+        period: currentPeriod
       }
     })
     .then(res => {
@@ -76,13 +77,12 @@ Page({
         if (res.ranking) {
           that.setData({
             searchHistory: res.ranking,
-            filteredVideos: res.ranking[that.data.currentPeriod],
             page: 1, // 重置页码
             visibleVideos: [], // 清空可见视频列表
             noMoreData: false,
-            searchHistoryCount: res.ranking.length
+            searchHistoryCount: res.ranking.length || 0
           });
-          updateStorageCurrent(res.ranking.length);
+          updateStorageCurrent(res.ranking.length || 0);
           that.loadData(); // 加载第一页数据
           console.log('Records Information:', res.ranking);  // 打印 ranking 信息
         } else {
@@ -118,12 +118,14 @@ Page({
     this.setData({ loading: true });
     // 添加一个延迟
     setTimeout(() => {
-      const start = (this.data.page - 1) * this.data.pageSize;
-      const end = start + this.data.pageSize;
-      const pageData = this.data.filteredVideos.slice(start, end);
+      const { page, pageSize, searchHistory, visibleVideos } = this.data;
+      const allVideos = searchHistory.list || [];
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const pageData = allVideos.slice(start, end);
       if (pageData.length > 0) {
         this.setData({
-          visibleVideos: this.data.visibleVideos.concat(pageData),
+          visibleVideos: visibleVideos.concat(pageData),
           loading: false
         });
       } else {
@@ -159,14 +161,15 @@ Page({
 
   switchPeriod: function(e) {
     const period = e.currentTarget.dataset.period;
+    if (period === this.data.currentPeriod) return;
+    
     this.setData({
       currentPeriod: period,
-      filteredVideos: this.data.searchHistory[period] || [],
       page: 1, // 重置页码
       visibleVideos: [], // 清空可见视频列表
       noMoreData: false
     });
-    this.loadData(); // 加载第一页数据
+    this.fetchRanking(this.data.searchQuery);
   },
 
   onImageError: function(e) {
@@ -208,12 +211,12 @@ Page({
     const videoIdToDelete = visibleVideos[index].video_id;
     // 从 visibleVideos 中删除对应的数据
     visibleVideos.splice(index, 1);
-    // 遍历 searchHistory 对象，删除指定的 video_id
-    for (const key in searchHistory) {
-      if (Array.isArray(searchHistory[key])) {
-        searchHistory[key] = searchHistory[key].filter(item => item.video_id !== videoIdToDelete);
-      }
+    
+    // 从 searchHistory.list 中删除
+    if (searchHistory && Array.isArray(searchHistory.list)) {
+      searchHistory.list = searchHistory.list.filter(item => item.video_id !== videoIdToDelete);
     }
+    
     this.UploadRecord([videoIdToDelete], 'delete');
     this.setData({
         visibleVideos: visibleVideos,
@@ -241,12 +244,12 @@ Page({
     const videoIds = selectedVideos.map(index => visibleVideos[index].video_id).filter(id => id);
     // 使用 videoIds 过滤 visibleVideos 数组
     const newVisibleVideos = visibleVideos.filter(item => !videoIds.includes(item.video_id));
-    // 遍历 searchHistory 对象，删除指定的 video_id
-    for (const key in searchHistory) {
-      if (Array.isArray(searchHistory[key])) {
-        searchHistory[key] = searchHistory[key].filter(item => !videoIds.includes(item.video_id));
-      }
+    
+    // 从 searchHistory.list 中删除
+    if (searchHistory && Array.isArray(searchHistory.list)) {
+      searchHistory.list = searchHistory.list.filter(item => !videoIds.includes(item.video_id));
     }
+    
     // 上传删除记录
     this.UploadRecord(videoIds, 'delete');
     // 更新数据
@@ -287,10 +290,12 @@ Page({
     const title = e.currentTarget.dataset.title;
     const coverUrl = e.currentTarget.dataset.cover;
     const videoId = e.currentTarget.dataset.videoid;
+    const heat = e.currentTarget.dataset.heat || 0;
     wx.navigateTo({
       url: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(videoUrl)}&`+
            `cover=${encodeURIComponent(coverUrl)}&`+
            `videoid=${encodeURIComponent(videoId)}&`+
+           `heat=${encodeURIComponent(heat)}&`+
            `title=${encodeURIComponent(truncateString(title, 80, ''))}`
     });
   },
@@ -639,13 +644,25 @@ Page({
     const videoId = e.currentTarget.dataset.videoId;
     const platform = e.currentTarget.dataset.platform;
     
-    await refreshVideo(videoId, platform, this.data, (newData) => {
-      const newvisibleVideos = updateVideoData(this.data.visibleVideos, newData);
-      const newsearchHistory = updateRankingVideos(this.data.searchHistory, newData);
-      this.setData({
-        visibleVideos: newvisibleVideos,
-        searchHistory: newsearchHistory
-      });
+    showConfirmModal('确认重新获取', '确定要重新获取这条素材吗？', async (res) => {
+      if (res.confirm) {
+        await refreshVideo(videoId, platform, this.data, (newData) => {
+          const { searchHistory, visibleVideos } = this.data;
+          
+          // 更新 searchHistory.list
+          if (searchHistory && Array.isArray(searchHistory.list)) {
+            searchHistory.list = searchHistory.list.map(item => 
+              item.video_id === videoId ? { ...item, ...newData } : item
+            );
+          }
+          
+          const newvisibleVideos = updateVideoData(visibleVideos, newData);
+          this.setData({
+            visibleVideos: newvisibleVideos,
+            searchHistory: searchHistory
+          });
+        });
+      }
     });
   }
 });

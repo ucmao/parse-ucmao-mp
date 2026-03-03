@@ -11,13 +11,14 @@ Page({
     title: '', // 标题内容
     truncatedTitle: '', // 截取后的标题内容
     videoId: '', // 视频ID
+    heat: 0, // 热度
     fromShare: false, // 是否从分享进入
     showTips: false // 是否显示播放提示
   },
 
   onLoad: function (options) {
     // 获取传递的参数并解码
-    const { url, cover, title, videoid, fromShare} = options;
+    const { url, cover, title, videoid, fromShare, heat} = options;
     const decodedVideoId = videoid ? decodeURIComponent(videoid) : '';
     if (url) {
       uploadScore([decodedVideoId], 'validPlay');
@@ -36,6 +37,7 @@ Page({
         title: decodeURIComponent(title),
         truncatedTitle: truncateString(decodeURIComponent(title), 79, '...'),
         videoId: decodedVideoId,
+        heat: heat ? decodeURIComponent(heat) : 0,
         fromShare: fromShare === 'true',
         hasParams: true,
         showTips: shouldShowTips

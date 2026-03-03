@@ -67,6 +67,7 @@
               <view class="grid-info">
                 <text class="grid-title">{{item.title || '无标题'}}</text>
                 <view class="grid-meta">
+                  <text class="grid-heat">✨ {{item.heat || 0}}</text>
                   <text class="grid-time">{{item.save_time}}</text>
                 </view>
               </view>
@@ -102,7 +103,7 @@
     <scroll-view scroll-x="true" class="batch-bottom-actions" enable-flex="true">
       <view class="batch-bottom-row">
         <button class="batch-bottom-btn" bindtap="selectAll">全选</button>
-        <button class="batch-bottom-btn" bindtap="selectInverse">反选</button>
+        <button class="batch-bottom-btn" bindtap="clearSelection">清空</button>
         <button class="batch-bottom-btn secondary" bindtap="batchCopyTitles">复制标题</button>
         <button class="batch-bottom-btn secondary" bindtap="batchCopyCoverUrls">复制封面</button>
         <button class="batch-bottom-btn secondary" bindtap="batchCopyVideoUrls">复制视频</button>

@@ -124,16 +124,17 @@
   overflow: hidden;
 }
 
-/* 数字：大号底纹，极浅灰，不抢标题 */
+/* 数字：特大号背景纹理，溢出右下角 */
 .grid-card-num {
   position: absolute;
-  left: 20rpx;
-  bottom: 18rpx;
-  font-size: 80rpx;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.04);
+  right: -20rpx;
+  bottom: -40rpx;
+  font-size: 180rpx;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.045);
   line-height: 1;
   z-index: 0;
+  font-style: italic;
 }
 
 /* 标题：唯一视觉重心，加粗 */
@@ -148,16 +149,17 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-weight: 700;
+  margin-top: 10rpx;
 }
 
-/* 角标：半透明渐变 + 对角圆角 + 字间距 */
+/* 角标：左上角浮动 */
 .grid-card-badge {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   font-size: 18rpx;
-  padding: 6rpx 12rpx;
-  border-radius: 0 20rpx 0 12rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx 0 20rpx 0;
   font-weight: 600;
   letter-spacing: 1rpx;
   z-index: 2;

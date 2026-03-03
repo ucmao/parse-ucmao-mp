@@ -600,7 +600,7 @@ page {
 
 .actions {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 6px;
   margin-top: auto;
 }
@@ -610,38 +610,52 @@ page {
   color: #ff6033; /* 提升亮度和饱和度的活力橙 */
   font-weight: 600; /* 加粗字重使颜色更显眼 */
   flex-shrink: 0;
-  margin-bottom: 2px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.new-badge {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-right: 4px;
+  box-shadow: 0 2px 4px rgba(255, 154, 158, 0.3);
+  flex-shrink: 0;
+  line-height: 1.2;
 }
 
 .actions-spacer {
   flex: 1;
 }
 
-.refresh-button{
-  background-color: white; 
+.refresh-button {
+  background-color: #fff1f0;
   border: none;
-  color:#1296db;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none; 
-  display: inline-block; 
-  font-size: 12px;
-  line-height: 12px;
-  margin: 0 3px; 
-  cursor: pointer; 
-  border-radius: 10px;
-  transition: background-color 0.3s, color 0.3s;
+  color: #ff4d4f;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  border-radius: 6px;
   min-height: 0 !important;
   width: auto !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .refresh-button:active {
-  background-color: #1296db;
-  color: white;
+  background-color: #ffccc7;
+  color: #d9363e;
 }
 
-.refresh-button:last-child {
-  margin-right: 12px;
+.refresh-button::after {
+  border: none;
 }
 
 /* 操作按钮：重置默认最小高度与宽度，实现底部齐平 */

@@ -88,9 +88,13 @@ Page({
   fetchRanking: async function(searchQuery = '') {
     try {
       this.setData({ loading: true });
+      const { currentPeriod } = this.data;
       const res = await request('/api/ranking', {
         method: 'POST',
-        data: { searchQuery }
+        data: { 
+          searchQuery,
+          period: currentPeriod
+        }
       });
       
       console.log('Server Response:', res);
@@ -117,6 +121,8 @@ Page({
 
   switchPeriod: function(e) {
     const period = e.currentTarget.dataset.period;
+    if (period === this.data.currentPeriod) return;
+    
     this.setData({
       currentPeriod: period,
       page: 1,
@@ -124,7 +130,7 @@ Page({
       noMoreData: false,
       noMoreDataText: '没有更多数据了'
     });
-    this.loadData();
+    this.fetchRanking(this.data.searchQuery);
   },
 
   loadMore: function() {
@@ -135,23 +141,23 @@ Page({
   },
 
   loadData: function() {
-    this.setData({ loading: true });
     // 不再使用不必要的延迟
-    const { page, pageSize, currentPeriod, rankingData, visibleVideos } = this.data;
-    const filteredVideos = rankingData[currentPeriod] || [];
+    const { page, pageSize, rankingData, visibleVideos } = this.data;
+    const allVideos = rankingData.list || [];
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
-    const pageData = filteredVideos.slice(start, end);
+    const pageData = allVideos.slice(start, end);
+    
     if (pageData.length > 0) {
       this.setData({
         visibleVideos: visibleVideos.concat(pageData),
         loading: false
       });
     } else {
-      // 当前时段/搜索下实际条数达到后端上限(100)时提示“前100条”，否则“没有更多数据了”
-      const totalCount = filteredVideos.length;
+      // 当前条数达到后端上限(100)时提示“前100条”，否则“没有更多数据了”
+      const totalCount = allVideos.length;
       const noMoreDataText = totalCount >= 100
-        ? '已展示前 100 条，更多可尝试其他关键词或时间范围'
+        ? '已展示前 100 条，更多可尝试其他关键词'
         : '没有更多数据了';
       this.setData({
         loading: false,
@@ -355,31 +361,50 @@ Page({
     };
   },
 
-  showHiddenConfirm: function(event) {
+  showRefreshConfirm: function(event) {
     const index = event.currentTarget.dataset.index;
-    showConfirmModal('确认隐藏', '确定要隐藏这条记录吗？', (res) => {
+    const video = this.data.visibleVideos[index];
+    if (!video) return;
+
+    showConfirmModal('确认重新获取', '确定要重新获取这条记录吗？', (res) => {
       if (res.confirm) {
-        this.hiddenVideo(index);
+        this.doRefreshVideo(video.video_id, video.platform);
       }
     });
   },
 
-  // 隐藏视频
-  hiddenVideo: function(index) {
-    const { visibleVideos, rankingData } = this.data;
-    const videoId = visibleVideos[index].video_id;
-    // 从可见视频列表中删除
-    visibleVideos.splice(index, 1);
-    // 从所有时间段数据中删除
-    const updatedRankingData = { ...rankingData };
-    Object.keys(updatedRankingData).forEach(key => {
-      if (Array.isArray(updatedRankingData[key])) {
-        updatedRankingData[key] = updatedRankingData[key].filter(item => item.video_id !== videoId);
+  // 抽离具体的刷新逻辑以便复用
+  doRefreshVideo: async function(videoId, platform) {
+    await refreshVideo(videoId, platform, this.data, (newData) => {
+      const { rankingData, visibleVideos } = this.data;
+      
+      // 更新 rankingData.list
+      if (rankingData && Array.isArray(rankingData.list)) {
+        rankingData.list = rankingData.list.map(item => 
+          item.video_id === videoId ? { ...item, ...newData } : item
+        );
       }
+      
+      // 更新 visibleVideos，并重置加载状态，以便重新触发隐藏视频加载校验
+      const newVisibleVideos = visibleVideos.map(item => 
+        item.video_id === videoId ? { ...item, ...newData, loaded: false, showItem: false } : item
+      );
+
+      this.setData({
+        visibleVideos: newVisibleVideos,
+        rankingData: rankingData
+      });
     });
-    this.setData({
-      visibleVideos,
-      rankingData: updatedRankingData
+  },
+
+  RefreshVideo: async function(e) {
+    const videoId = e.currentTarget.dataset.videoId;
+    const platform = e.currentTarget.dataset.platform;
+    
+    showConfirmModal('确认重新获取', '确定要重新获取这条素材吗？', (res) => {
+      if (res.confirm) {
+        this.doRefreshVideo(videoId, platform);
+      }
     });
   },
 
@@ -408,20 +433,6 @@ Page({
     }
   },
 
-  RefreshVideo: async function(e) {
-    const videoId = e.currentTarget.dataset.videoId;
-    const platform = e.currentTarget.dataset.platform;
-    
-    await refreshVideo(videoId, platform, this.data, (newData) => {
-      const newrankingData = updateRankingVideos(this.data.rankingData, newData);
-      const newvisibleVideos = updateVideoData(this.data.visibleVideos, newData);
-      this.setData({
-        visibleVideos: newvisibleVideos,
-        rankingData: newrankingData
-      });
-    });
-  },
-
   // 更新视频加载状态
   updateVideoLoadedStatus: function(videoId, showItem = false) {
     const { visibleVideos } = this.data;
@@ -430,7 +441,7 @@ Page({
         return {
           ...video,
           loaded: true,
-          showItem: showItem ? true : video.showItem
+          showItem: !!showItem
         };
       }
       return video;

@@ -20,7 +20,7 @@ page {
   --text-primary: #1a1a1a;
   --text-secondary: #666666;
   --text-tertiary: #999999;
-  --bg-page: #f5f6f8;
+  --bg-page: #f7f8fa;
   --bg-card: #ffffff;
   --border-light: rgba(0, 0, 0, 0.06);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", STHeiti, sans-serif;
