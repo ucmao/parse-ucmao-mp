@@ -167,6 +167,33 @@ Page({
     }
   },
 
+  onItemTap: function(e) {
+    const index = e.currentTarget.dataset.index;
+    if (this.data.batchMode) {
+      this.toggleItemSelection(index);
+    } else {
+      // 检查是否有视频地址再打开，避免无效点击
+      if (e.currentTarget.dataset.url) {
+        this.openVideo(e);
+      }
+    }
+  },
+
+  toggleItemSelection: function(index) {
+    let { selectedVideos } = this.data;
+    const pos = selectedVideos.indexOf(index);
+    if (pos > -1) {
+      selectedVideos.splice(pos, 1);
+    } else {
+      selectedVideos.push(index);
+    }
+    this.setData({
+      selectedVideos: selectedVideos
+    }, () => {
+      this.updateVisibleVideosCheckedState();
+    });
+  },
+
   openVideo: function(e) {
     const videoUrl = e.currentTarget.dataset.url;
     const title = e.currentTarget.dataset.title;
@@ -248,6 +275,11 @@ Page({
   },
 
   toggleBatchMode: function() {
+    // 增加轻微震动反馈
+    if (wx.vibrateShort) {
+      wx.vibrateShort({ type: 'medium' });
+    }
+    
     this.setData({
       batchMode: !this.data.batchMode,
       selectedVideos: []
@@ -362,6 +394,7 @@ Page({
   },
 
   showRefreshConfirm: function(event) {
+    if (this.data.batchMode) return;
     const index = event.currentTarget.dataset.index;
     const video = this.data.visibleVideos[index];
     if (!video) return;

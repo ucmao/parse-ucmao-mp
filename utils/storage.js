@@ -10,6 +10,12 @@ export function getUserInfo() {
   return userInfo;
 }
 
+// 检查用户信息是否为默认值
+export function isUserInfoDefault(userInfo) {
+  if (!userInfo) return true;
+  return userInfo.nickName === DEFAULT_NICKNAME || userInfo.avatarUrl === DEFAULT_AVATAR_URL;
+}
+
 // 读取用户权益数据
 export function getBenefitsInfo() {
   const benefits = wx.getStorageSync('benefits') || {

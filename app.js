@@ -3,22 +3,20 @@ import config from './utils/config.js';
 App({
   async onLaunch() {
     try {
-      const openid = wx.getStorageSync('openid');
-      if (!openid) {
-        // 封装wx.login为Promise
-        const loginRes = await new Promise((resolve, reject) => {
-          wx.login({
-            success: resolve,
-            fail: reject
-          });
+      // 无论本地是否有 openid，都执行登录以同步最新的用户信息
+      // 封装wx.login为Promise
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
         });
-        
-        if (loginRes.code) {
-          // 将 code 发送到服务器
-          await this.login(loginRes.code);
-        } else {
-          console.error('登录失败！', loginRes.errMsg);
-        }
+      });
+      
+      if (loginRes.code) {
+        // 将 code 发送到服务器
+        await this.login(loginRes.code);
+      } else {
+        console.error('登录失败！', loginRes.errMsg);
       }
     } catch (error) {
       console.error('登录过程发生错误:', error);

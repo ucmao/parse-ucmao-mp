@@ -94,7 +94,7 @@
 </view>
 
 <!-- 编辑态吸底操作栏 -->
-<view class="batch-bottom-bar" wx:if="{{batchMode}}">
+<view class="batch-bottom-bar {{batchMode ? 'batch-bottom-bar-active' : ''}}">
   <view class="batch-bar-top">
     <text class="batch-selected-summary">已选择 {{selectedVideos.length}} 个记录</text>
     <view class="batch-close-btn" bindtap="toggleBatchMode">×</view>

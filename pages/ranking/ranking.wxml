@@ -36,7 +36,7 @@
 </view>
 <view class="container">
   <view class="search-history">
-    <scroll-view scroll-y class="history-list" bindscrolltolower="loadMore" style="height: {{listHeight}}px;" enable-flex="true">
+    <scroll-view scroll-y class="history-list {{batchMode ? 'history-list-batch' : ''}}" bindscrolltolower="loadMore" style="height: {{listHeight}}px;" enable-flex="true">
       <view class="list-empty" wx:if="{{!loading && visibleVideos.length === 0 && maintenanceMode}}">
         <text class="list-empty-title">榜单维护中</text>
         <text class="list-empty-desc">正在更新内容，请稍后再试～</text>
@@ -51,13 +51,13 @@
             <view class="checkbox-container" wx:if="{{batchMode}}">
               <checkbox value="{{index}}" checked="{{item.checked}}" color="#fda085"/>
             </view>
-            <view class="history-item {{batchMode ? 'history-item-batch' : ''}}" bindlongpress="showRefreshConfirm" data-index="{{index}}">
+            <view class="history-item {{batchMode ? 'history-item-batch' : ''}}" bindtap="onItemTap" bindlongpress="showRefreshConfirm" data-index="{{index}}" data-url="{{item.video_url}}" data-cover="{{item.cover_url}}" data-videoid="{{item.video_id}}" data-title="{{item.title}}">
               <view class="cover-container">
                 <view class="cover-rank medal medal-{{index + 1}}" wx:if="{{index < 3}}"><text class="medal-num">{{index + 1}}</text></view>
                 <view class="cover-rank rank-plain" wx:else><text class="rank-plain-num">{{index + 1}}</text></view>
                 <image class="cover-image" src="{{item.cover_url}}" mode="aspectFill" binderror="onImageErrorCover" data-index="{{index}}"></image>
                 <view class="cover-overlay"></view>
-                <view class="play-button" bindtap="openVideo" data-url="{{item.video_url}}" data-cover="{{item.cover_url}}" data-videoid="{{item.video_id}}" data-title="{{item.title}}" data-index="{{index}}" wx:if="{{item.showItem}}">
+                <view class="play-button" wx:if="{{item.showItem}}">
                   <image class="play-icon" mode="aspectFit"></image>
                 </view>
                 <video wx:if="{{!item.loaded}}" id="hiddenVideo-{{item.video_id}}" src="{{item.video_url}}" hidden="{{true}}" autoplay="{{false}}" bindloadedmetadata="onVideoLoadedMetadata" binderror="onVideoError" data-video-id="{{item.video_id}}"></video>
@@ -69,16 +69,16 @@
                   </view>
                   <view class="title-with-copy">
                     <text class="title">{{item.title}}</text>
-                    <image class="copy-button" src="../../images/copy-icon.png" bindtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
+                    <image class="copy-button" src="../../images/copy-icon.png" catchtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
                   </view>
                 </view>
                 <view class="actions">
                   <view class="new-badge" wx:if="{{item.is_new}}">NEW</view>
                   <text class="heat-inline">🔥 {{item.query_count}}</text>
                   <view class="actions-spacer"></view>
-                  <button class="refresh-button" bindtap="RefreshVideo" data-video-id="{{item.video_id}}" data-platform="{{item.platform}}" wx:if="{{item.loaded && !item.showItem}}" disabled="{{batchMode}}">重新获取</button>
-                  <button class="action-button" bindtap="downloadCover" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵封面</button>
-                  <button class="action-button" bindtap="downloadVideo" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵视频</button>
+                  <button class="refresh-button" catchtap="RefreshVideo" data-video-id="{{item.video_id}}" data-platform="{{item.platform}}" wx:if="{{item.loaded && !item.showItem}}" disabled="{{batchMode}}">重新获取</button>
+                  <button class="action-button" catchtap="downloadCover" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵封面</button>
+                  <button class="action-button" catchtap="downloadVideo" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵视频</button>
                 </view>
               </view>
             </view>
@@ -102,7 +102,7 @@
 </view>
 
 <!-- 编辑态吸底操作栏 -->
-<view class="batch-bottom-bar" wx:if="{{batchMode}}">
+<view class="batch-bottom-bar {{batchMode ? 'batch-bottom-bar-active' : ''}}">
   <view class="batch-bar-top">
     <text class="batch-selected-summary">已选择 {{selectedVideos.length}} 个素材</text>
     <view class="batch-close-btn" bindtap="toggleBatchMode">×</view>

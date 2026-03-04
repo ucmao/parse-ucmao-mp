@@ -1,6 +1,6 @@
 import { request } from '../../utils/request';
 import config from '../../utils/config.js';
-import { getUserInfo, getBenefitsInfo, updateStorageCurrent } from '../../utils/storage';
+import { getUserInfo, getBenefitsInfo, updateStorageCurrent, isUserInfoDefault } from '../../utils/storage';
 import { copyToClipboard } from '../../utils/clipboard';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { updateVideoData, updateRankingVideos, refreshVideo, truncateString } from '../../utils/util';
@@ -105,6 +105,32 @@ Page({
       userInfo: newUserInfo,
       storageLimit: storageLimit
     });
+    
+    // 如果是默认用户信息，尝试从服务器同步
+    if (isUserInfoDefault(newUserInfo)) {
+      this.syncProfileFromServer();
+    }
+  },
+
+  syncProfileFromServer: function() {
+    request('/api/get_userinfo', {
+      method: 'GET'
+    }).then(res => {
+      // 这里的 res 就是后端返回的完整 json 对象，其中数据在 data 字段中
+      if (res.data && (res.data.nickname || res.data.avatar_url)) {
+        const updatedUserInfo = {
+          ...this.data.userInfo,
+          nickName: res.data.nickname || this.data.userInfo.nickName,
+          avatarUrl: res.data.avatar_url || this.data.userInfo.avatarUrl
+        };
+        this.setData({
+          userInfo: updatedUserInfo
+        });
+        wx.setStorageSync('userInfo', updatedUserInfo);
+      }
+    }).catch(err => {
+      console.error('Failed to sync profile from server:', err);
+    });
   },
 
   loadMore: function() {
@@ -192,6 +218,7 @@ Page({
   },
 
   showDeleteConfirm: function(e) {
+    if (this.data.batchMode) return;
     const index = e.currentTarget.dataset.index;
     showConfirmModal('确认删除', '您确定要删除此记录吗？', (res) => {
       if (res.confirm) {
@@ -378,6 +405,11 @@ Page({
   },
 
   toggleBatchMode: function() {
+    // 增加轻微震动反馈
+    if (wx.vibrateShort) {
+      wx.vibrateShort({ type: 'medium' });
+    }
+    
     this.setData({
       batchMode: !this.data.batchMode,
       selectedVideos: [] // 切换批量模式时清空选择

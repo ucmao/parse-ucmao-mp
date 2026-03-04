@@ -255,11 +255,19 @@ page {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 99;
+  z-index: 101; /* 提升层级，确保在最上层 */
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(255, 255, 255, 0.88);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  visibility: hidden; /* 隐藏时不可见且不占位 */
+}
+
+.batch-bottom-bar-active {
+  transform: translateY(0);
+  visibility: visible;
 }
 
 /* 底部栏顶部：已选数量居中 + 关闭图标占右侧一格，不浪费空间 */
@@ -408,7 +416,13 @@ page {
 .video-item {
   position: relative;
   margin-bottom: 12px;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* 批量模式下的列表项整体特效 (建议B) */
+.history-list-batch .video-item {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 选中卡片：品牌色边框 + 轻微缩小，增强操作反馈 */
@@ -418,14 +432,28 @@ page {
 }
 
 .video-item.card-selected {
-  transform: scale(0.98);
+  transform: scale(0.96) !important;
+  opacity: 1 !important;
+}
+
+@keyframes checkboxFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(0.9);
+  }
 }
 
 .checkbox-container {
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 1; /* 确保选择框在视频内容之上 */
+  z-index: 10; /* 提升层级，确保选择框在视频内容之上 */
+  transform: scale(0.9);
+  animation: checkboxFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 批量模式下为勾选框预留左侧区域，避免挤压/遮挡排名和封面 */
