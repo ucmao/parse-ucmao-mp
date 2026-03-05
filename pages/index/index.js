@@ -1,4 +1,4 @@
-import { request } from '../../utils/request';
+import { request, config } from '../../utils/request';
 import { getClipboardData, copyToClipboard } from '../../utils/clipboard';
 import { extractUrl, truncateString } from '../../utils/util';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
@@ -259,15 +259,18 @@ Page({
   onShareAppMessage: function () {
     const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
+      // 动态生成带播放按钮的分享封面地址
+      const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${video_id}&cover_url=${encodeURIComponent(cover_url)}`;
+      
       return {
-        title: `分享视频：${truncateString(title, 30)}`,
+        title: truncateString(title, 35) || '这个视频太赞了，快来看看！',
         path: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
               `cover=${encodeURIComponent(cover_url)}&`+
               `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
               `videoid=${encodeURIComponent(video_id)}&`+
               `heat=${encodeURIComponent(heat || 0)}&`+
               `fromShare=true`,
-        imageUrl: cover_url,
+        imageUrl: shareImageUrl,
         success: (res) => {
           uploadScore([video_id], 'shareFriend');
           console.log('分享成功', res);
@@ -278,7 +281,7 @@ Page({
       };
     } else {
       return {
-        title: '大爆单，带货大神都在用',
+        title: '发现一个超好用的去水印神器，免费还快！',
         path: '/pages/index/index',
         success: (res) => {
           console.log('右上角分享成功', res);
@@ -293,15 +296,18 @@ Page({
   onShareTimeline: function () {
     const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
+      // 动态生成带播放按钮的分享封面地址
+      const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${video_id}&cover_url=${encodeURIComponent(cover_url)}`;
+
       return {
-        title: `分享视频: ${truncateString(title, 30)}`,
+        title: '分享一个我一直在用的去水印神器',
         query: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
                `cover=${encodeURIComponent(cover_url)}&`+
                `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
                `videoid=${encodeURIComponent(video_id)}&`+
                `heat=${encodeURIComponent(heat || 0)}&`+
                `fromShare=true`,
-        imageUrl: cover_url,
+        imageUrl: shareImageUrl,
         success: (res) => {
           uploadScore([video_id], 'shareTimeline');
           console.log('分享成功', res);
@@ -312,7 +318,7 @@ Page({
       };
     } else {
       return {
-        title: '大爆单，带货大神都在用',
+        title: '分享一个我一直在用的去水印神器',
         query: '/pages/index/index',
         success: (res) => {
           console.log('分享成功', res);

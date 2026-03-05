@@ -14,7 +14,7 @@
             <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onImageError" />
           </button>
           <view class="nickname-container">
-            <input type="nickname" class="nickname-input" value="{{userInfo.nickName}}" placeholder="点击输入或获取昵称" bindblur="onNicknameChange" bindconfirm="onNicknameChange" />
+            <input type="nickname" class="nickname-input" value="{{userInfo.nickName}}" placeholder="取个好听的名字吧" bindblur="onNicknameChange" bindconfirm="onNicknameChange" />
           </view>
         </view>
         <view class="storage-stats" bindtap="navigateToQuestions">
@@ -25,7 +25,7 @@
 
       <view class="search-history-controls">
         <view class="search-header">
-          <text class="search-subtitle">历史记录</text>
+          <text class="search-subtitle">我的解析记录</text>
         </view>
         <view class="search-bar">
           <view class="search-input-container">

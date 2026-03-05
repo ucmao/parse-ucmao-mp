@@ -375,8 +375,13 @@ Page({
 
   onShareAppMessage: function () {
     const { searchQuery, currentPeriod } = this.data;
+    const periodLabel = this.data.periods.find(p => p.value === currentPeriod)?.label || '全部';
+    const title = searchQuery 
+      ? `发现这些“${searchQuery}”爆款素材，去水印直接用！` 
+      : `全网短视频${periodLabel}热门榜单，找灵感、找素材就用它！`;
+    
     return {
-      title: `${searchQuery}素材热度很高，快试试`,
+      title: title,
       path: `/pages/ranking/ranking?currentperiod=${currentPeriod}&searchquery=${searchQuery}`,
       success: (res) => console.log('分享成功', res),
       fail: (err) => console.error('分享失败', err)
@@ -385,9 +390,13 @@ Page({
 
   onShareTimeline: function () {
     const { searchQuery, currentPeriod } = this.data;
+    const title = searchQuery 
+      ? `今日份“${searchQuery}”热搜素材榜单，创作者必备。` 
+      : `今日短视频爆款榜单已更新，看看大家都在下什么。`;
+
     return {
-      title: `${searchQuery}素材热度很高，快试试`,
-      query: `/pages/ranking/ranking?currentperiod=${currentPeriod}&searchquery=${searchQuery}`,
+      title: title,
+      query: `currentperiod=${currentPeriod}&searchquery=${searchQuery}`,
       success: (res) => console.log('分享成功', res),
       fail: (err) => console.error('分享失败', err)
     };

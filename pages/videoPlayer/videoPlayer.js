@@ -2,6 +2,7 @@ import { copyToClipboard } from '../../utils/clipboard';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { uploadScore } from '../../utils/score';
 import { truncateString } from '../../utils/util';
+import config from '../../utils/config';
 
 
 Page({
@@ -90,15 +91,19 @@ Page({
     const coverUrl = this.data.coverUrl;
     const title = this.data.title;
     const videoId = this.data.videoId;
+    
+    // 动态生成带播放按钮的分享封面地址
+    const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${videoId}&cover_url=${encodeURIComponent(coverUrl)}`;
+
     // 返回分享配置
     return {
-      title: `分享视频: ${truncateString(title, 30)}`,
+      title: truncateString(title, 35) || '这个视频太赞了，快来看看！',
       path: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(videoUrl)}&` +
             `cover=${encodeURIComponent(coverUrl)}&` +
             `videoid=${encodeURIComponent(videoId)}&` +
             `title=${encodeURIComponent(title)}&` +
             `fromShare=true`,
-      imageUrl: coverUrl, // 设置封面图为 cover_url
+      imageUrl: shareImageUrl,
       success: (res) => {
         // 转发成功时执行
         uploadScore([videoId], 'shareFriend');
@@ -117,15 +122,19 @@ Page({
     const coverUrl = this.data.coverUrl;
     const title = this.data.title;
     const videoId = this.data.videoId;
+
+    // 动态生成带播放按钮的分享封面地址
+    const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${videoId}&cover_url=${encodeURIComponent(coverUrl)}`;
+
     // 返回分享配置
     return {
-      title: `分享视频：${truncateString(title, 30)}`,
+      title: '分享一个我一直在用的去水印神器',
       query: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(videoUrl)}&` +
              `cover=${encodeURIComponent(coverUrl)}&`+
              `videoid=${encodeURIComponent(videoId)}&`+
              `title=${encodeURIComponent(title)}&`+
              `fromShare=true`,
-      imageUrl: coverUrl, // 设置封面图为 cover_url
+      imageUrl: shareImageUrl,
       success: (res) => {
         // 转发成功时执行
         uploadScore([videoId], 'shareTimeline');
