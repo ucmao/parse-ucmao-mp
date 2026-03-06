@@ -220,7 +220,7 @@ page {
   background-color: var(--color-primary-dark, #0e7bb5);
 }
 
-.search-button image {
+.search-button .search-icon-img {
   width: 20px;
   height: 20px;
 }
@@ -522,9 +522,9 @@ page {
   font-size: 13px;
   color: #333;
   line-height: 1.4;
-  height: 36px;
+  max-height: 55px; /* 适配3行高度 */
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-weight: 500;

@@ -45,9 +45,10 @@ Page({
   },
 
   setNavSize() {
-    const sys = wx.getSystemInfoSync();
-    const statusHeight = sys.statusBarHeight || 0;
-    const navHeight = sys.system.indexOf('iOS') > -1 ? 44 : 48;
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    const statusHeight = windowInfo.statusBarHeight || 0;
+    const navHeight = deviceInfo.system.indexOf('iOS') > -1 ? 44 : 48;
     this.setData({ statusBarHeight: statusHeight, navBarHeight: navHeight });
   },
 
@@ -148,14 +149,13 @@ Page({
   },
 
   handleContact(e) {
-    console.log('用户点击了联系客服按钮', e.detail);
   },
 
   onShareAppMessage() {
     return {
       title: 'MiniParse使用指南：解决解析失败、保存失败等常见问题',
       path: '/pages/questions/questions',
-      success: (res) => console.log('分享成功', res),
+      success: (res) => {},
       fail: (err) => console.error('分享失败', err)
     };
   },
@@ -164,7 +164,7 @@ Page({
     return {
       title: 'MiniParse：热门问题与解答手册',
       query: '',
-      success: (res) => console.log('分享成功', res),
+      success: (res) => {},
       fail: (err) => console.error('分享失败', err)
     };
   }

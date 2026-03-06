@@ -2,6 +2,7 @@ import { request } from '../../utils/request';
 import config from '../../utils/config.js';
 import { getUserInfo, getBenefitsInfo, updateStorageCurrent, isUserInfoDefault } from '../../utils/storage';
 import { copyToClipboard } from '../../utils/clipboard';
+import { uploadScore } from '../../utils/score';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
 import { updateVideoData, updateRankingVideos, refreshVideo, truncateString } from '../../utils/util';
 import { showToast, showConfirmModal } from '../../utils/ui';
@@ -46,9 +47,10 @@ Page({
 
   // 计算导航栏高度
   setNavSize: function() {
-    const sysinfo = wx.getSystemInfoSync();
-    const statusHeight = sysinfo.statusBarHeight;
-    const isiOS = sysinfo.system.indexOf('iOS') > -1;
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    const statusHeight = windowInfo.statusBarHeight;
+    const isiOS = deviceInfo.system.indexOf('iOS') > -1;
     const navHeight = isiOS ? 44 : 48; // iOS 导航栏高度 44，Android 48
 
     this.setData({
@@ -72,7 +74,6 @@ Page({
       }
     })
     .then(res => {
-      console.log('Server Response:', res);  // 打印完整的响应数据
       if (res.retcode === 200) {
         if (res.ranking) {
           that.setData({
@@ -84,7 +85,6 @@ Page({
           });
           updateStorageCurrent(res.ranking.length || 0);
           that.loadData(); // 加载第一页数据
-          console.log('Records Information:', res.ranking);  // 打印 ranking 信息
         } else {
           showToast('服务器返回数据格式不正确', 'none');
         }
@@ -329,7 +329,11 @@ Page({
 
   copyTitle: function(e) {
     const title = e.currentTarget.dataset.title;
+    const videoId = e.currentTarget.dataset.videoId;
     copyToClipboard(title, { title: '标题已复制' });
+    if (videoId) {
+      uploadScore([videoId], 'copyTitle');
+    }
   },
 
   downloadCover: function(e) {
@@ -340,13 +344,15 @@ Page({
             if (error) {
               console.error('下载失败:', error);
               copyToClipboard(coverUrl, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
+            } else {
+              // 查找 visibleVideos 中与 coverUrl 匹配的记录
+              const videoIndex = this.data.visibleVideos.findIndex(video => video.cover_url === coverUrl);
+              const videoData = this.data.visibleVideos[videoIndex];
+              if (videoData && videoData.video_id) {
+                uploadScore([videoData.video_id], 'imageDownload');
+              }
             }
           });
-          // 查找 visibleVideos 中与 coverUrl 匹配的记录
-          const videoIndex = this.data.visibleVideos.findIndex(video => video.cover_url === coverUrl);
-          const videoData = this.data.visibleVideos[videoIndex];
-          // 这里可以添加上传records
-          // this.UploadRecord([videoData.video_id], 'update');
         }
     });
   },
@@ -359,15 +365,13 @@ Page({
             downloadVideoToPhotosAlbum(videoUrl, videoId)
             .then((message) => {
               showToast(message, 'success');
+              if (videoId) {
+                uploadScore([videoId], 'videoDownload');
+              }
             })
             .catch((error) => {
               copyToClipboard(videoUrl, { title: '下载失败: 视频地址已复制，您可以尝试手动下载', 'icon': 'none' });
             });
-            // 查找 visibleVideos 中与 videoUrl 匹配的记录
-            const videoIndex = this.data.visibleVideos.findIndex(video => video.video_url === videoUrl);
-            const videoData = this.data.visibleVideos[videoIndex];
-            // 这里可以添加上传records
-            // this.UploadRecord([videoData.video_id], 'update');
           }
     });
   },
@@ -382,7 +386,6 @@ Page({
     })
     .then(res => {
       if (res.retcode === 200) {
-        console.log('Request Success:', res);
       } else {
         console.error('Request Error:', res);
       }
@@ -469,27 +472,27 @@ Page({
     const contentStr = contents.join('\n\n');
     copyToClipboard(contentStr, { title: `已复制${contents.length}条${successMsg}` });
     if (videoIds.length > 0) {
-      // this.UploadRecord(videoIds, 'update');
+      uploadScore(videoIds, scoreEvent);
     }
   },
 
   // 批量复制标题
   batchCopyTitles: function() {
-    this.batchCopy('标题', '标题', 'batchCopyTitles', (video) => {
+    this.batchCopy('标题', '标题', 'batchCopyTitle', (video) => {
       return video.title;
     });
   },
 
   // 批量复制封面链接（仅保留纯链接）
   batchCopyCoverUrls: function() {
-    this.batchCopy('封面链接', '封面链接', 'batchCopyCoverUrls', (video) => {
+    this.batchCopy('封面链接', '封面链接', 'batchCopyImageLink', (video) => {
       return video.cover_url;
     });
   },
 
   // 批量复制视频链接（仅保留纯链接）
   batchCopyVideoUrls: function() {
-    this.batchCopy('视频链接', '视频链接', 'batchCopyVideoUrls', (video) => {
+    this.batchCopy('视频链接', '视频链接', 'batchCopyVideoLink', (video) => {
       return video.video_url;
     });
   },
@@ -628,7 +631,6 @@ Page({
         userInfo: userInfo
       }
     }).then(res => {
-      console.log('用户信息同步成功');
     }).catch(err => {
       console.error('用户信息同步失败:', err);
     });
@@ -659,8 +661,37 @@ Page({
   onVideoError: function(e) {
     const videoId = e.currentTarget.dataset.videoId;
     console.error('Video error:', e.detail);
-    // 更新 visibleVideos 中的 showitem 状态
-    const visibleVideos = this.data.visibleVideos;
+    
+    const { visibleVideos } = this.data;
+    const index = visibleVideos.findIndex(item => item.video_id === videoId);
+    
+    if (index > -1) {
+      const item = visibleVideos[index];
+      // 如果没有重试过，则尝试自动重试一次
+      if (!item.hasRetried) {
+        console.log(`视频 ${videoId} 加载失败，正在尝试自动重试...`);
+        
+        // 标记为已重试
+        const updatedVisibleVideos = [...visibleVideos];
+        updatedVisibleVideos[index] = {
+          ...item,
+          hasRetried: true,
+          // 通过在 URL 后添加随机参数来强制重新加载
+          video_url: item.video_url.includes('?') 
+            ? `${item.video_url}&retry=${Date.now()}` 
+            : `${item.video_url}?retry=${Date.now()}`
+        };
+        
+        this.setData({
+          visibleVideos: updatedVisibleVideos
+        });
+        
+        // 不设置 loaded，让 video 标签继续尝试加载新 URL
+        return;
+      }
+    }
+
+    // 如果已经重试过或者找不到索引，则标记加载完成（但 showItem 为 false）
     const updatedVisibleVideos = visibleVideos.map(video => {
       if (video.video_id === videoId) {
         video.loaded = true;  // 标记为已加载
@@ -688,7 +719,10 @@ Page({
             );
           }
           
-          const newvisibleVideos = updateVideoData(visibleVideos, newData);
+          // 重置加载状态，重新触发校验
+          const newvisibleVideos = visibleVideos.map(item => 
+            item.video_id === videoId ? { ...item, ...newData, loaded: false, showItem: false, hasRetried: false } : item
+          );
           this.setData({
             visibleVideos: newvisibleVideos,
             searchHistory: searchHistory

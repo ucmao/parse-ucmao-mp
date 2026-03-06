@@ -65,7 +65,7 @@
                 <view class="grid-play-icon" wx:if="{{item.showItem}}"></view>
               </view>
               <view class="grid-info">
-                <text class="grid-title">{{item.title || '无标题'}}</text>
+                <view class="grid-title" user-select>{{item.title || '无标题'}}</view>
                 <view class="grid-meta">
                   <text class="grid-heat">✨ {{item.heat || 0}}</text>
                   <text class="grid-time">{{item.save_time}}</text>

@@ -55,6 +55,8 @@
               <view class="cover-container">
                 <view class="cover-rank medal medal-{{index + 1}}" wx:if="{{index < 3}}"><text class="medal-num">{{index + 1}}</text></view>
                 <view class="cover-rank rank-plain" wx:else><text class="rank-plain-num">{{index + 1}}</text></view>
+                <view class="new-badge-cover" wx:if="{{item.is_new}}">NEW</view>
+                <view class="platform-badge-cover">{{item.platform}}</view>
                 <image class="cover-image" src="{{item.cover_url}}" mode="aspectFill" binderror="onImageErrorCover" data-index="{{index}}"></image>
                 <view class="cover-overlay"></view>
                 <view class="play-button" wx:if="{{item.showItem}}">
@@ -63,22 +65,16 @@
                 <video wx:if="{{!item.loaded}}" id="hiddenVideo-{{item.video_id}}" src="{{item.video_url}}" hidden="{{true}}" autoplay="{{false}}" bindloadedmetadata="onVideoLoadedMetadata" binderror="onVideoError" data-video-id="{{item.video_id}}"></video>
               </view>
               <view class="content">
-                <view class="title-container">
-                  <view class="platform-badge">
-                    <text class="platform-text">{{item.platform}}</text>
-                  </view>
-                  <view class="title-with-copy">
-                    <text class="title">{{item.title}}</text>
-                    <image class="copy-button" src="../../images/copy-icon.png" catchtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
-                  </view>
+                <view class="title-with-copy">
+                  <view class="title" user-select>{{item.title}}</view>
+                  <image class="copy-button" src="../../images/copy-icon.png" catchtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
                 </view>
                 <view class="actions">
-                  <view class="new-badge" wx:if="{{item.is_new}}">NEW</view>
                   <text class="heat-inline">🔥 {{item.query_count}}</text>
                   <view class="actions-spacer"></view>
                   <button class="refresh-button" catchtap="RefreshVideo" data-video-id="{{item.video_id}}" data-platform="{{item.platform}}" wx:if="{{item.loaded && !item.showItem}}" disabled="{{batchMode}}">重新获取</button>
-                  <button class="action-button" catchtap="downloadCover" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵封面</button>
-                  <button class="action-button" catchtap="downloadVideo" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">喵视频</button>
+                  <button class="action-button" catchtap="copyCoverUrl" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">复制封面</button>
+                  <button class="action-button" catchtap="copyVideoUrl" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">复制视频</button>
                 </view>
               </view>
             </view>

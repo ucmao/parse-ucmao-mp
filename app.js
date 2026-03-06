@@ -15,8 +15,6 @@ App({
       if (loginRes.code) {
         // 将 code 发送到服务器
         await this.login(loginRes.code);
-      } else {
-        console.error('登录失败！', loginRes.errMsg);
       }
     } catch (error) {
       console.error('登录过程发生错误:', error);
@@ -38,7 +36,6 @@ App({
         });
       });
       
-      console.log('服务器响应:', response.data);
       if (response.data && response.data.openid) {
         const { openid, nickname, avatar_url } = response.data;
         wx.setStorageSync('openid', openid);

@@ -18,12 +18,6 @@ export function uploadScore(videoIds, actionType) {
     }
   })
   .then(res => {
-    // 统一打印成功日志（也可去掉，让外部自行处理）
-    if (res.retcode === 200) {
-      console.log('Score Upload Success:', res);
-    } else {
-      console.error('Score Upload Error (Response Error):', res);
-    }
     return res; // 将响应返回给外部，便于页面做后续处理（如弹窗）
   })
   .catch(err => {

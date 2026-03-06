@@ -14,7 +14,8 @@ Page({
     videoId: '', // 视频ID
     heat: 0, // 热度
     fromShare: false, // 是否从分享进入
-    showTips: false // 是否显示播放提示
+    showTips: false, // 是否显示播放提示
+    hasRetried: false // 是否已重试过
   },
 
   onLoad: function (options) {
@@ -43,8 +44,7 @@ Page({
         hasParams: true,
         showTips: shouldShowTips
       });
-
-      // 如果需要显示提示，3.5秒后自动隐藏
+      // 3.5秒后自动隐藏提示
       if (shouldShowTips) {
         setTimeout(() => {
           this.setData({
@@ -52,7 +52,6 @@ Page({
           });
         }, 3500);
       }
-      console.log("videoUrl", this.data.videoUrl);
     } else {
       // 如果没有参数，设置 hasParams 为 false
       this.setData({
@@ -107,7 +106,6 @@ Page({
       success: (res) => {
         // 转发成功时执行
         uploadScore([videoId], 'shareFriend');
-        console.log('分享成功', res);
       },
       fail: function (err) {
         // 转发失败时执行
@@ -138,7 +136,6 @@ Page({
       success: (res) => {
         // 转发成功时执行
         uploadScore([videoId], 'shareTimeline');
-        console.log('分享成功', res);
       },
       fail: function (err) {
         // 转发失败时执行
@@ -161,6 +158,8 @@ Page({
             if (error) {
               console.error('下载封面失败:', error);
               copyToClipboard(coverUrl, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
+            } else {
+              uploadScore([videoId], 'imageDownload');
             }
           });
         } else if (res.tapIndex === 1) {
@@ -183,6 +182,7 @@ Page({
 
   onCopyTitle: function() {
     const title = this.data.title;
+    const videoId = this.data.videoId;
     if (!title) return;
     
     wx.showModal({
@@ -192,9 +192,35 @@ Page({
       success: (res) => {
         if (res.confirm) {
           copyToClipboard(title, { title: '文案已复制' });
+          uploadScore([videoId], 'copyTitle');
         }
       }
     });
+  },
+
+  onVideoError: function(e) {
+    console.error('Video player error:', e.detail);
+    
+    // 如果没有重试过，则尝试自动重试一次
+    if (!this.data.hasRetried) {
+      console.log('视频播放失败，正在尝试自动重试...');
+      
+      const originalUrl = this.data.videoUrl;
+      const retryUrl = originalUrl.includes('?') 
+        ? `${originalUrl}&retry=${Date.now()}` 
+        : `${originalUrl}?retry=${Date.now()}`;
+      
+      this.setData({
+        hasRetried: true,
+        videoUrl: retryUrl
+      });
+    } else {
+      // 如果重试过了还是失败
+      wx.showToast({
+        title: '视频加载失败，请检查网络或稍后重试',
+        icon: 'none'
+      });
+    }
   },
 
 });

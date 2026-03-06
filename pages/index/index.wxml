@@ -71,6 +71,7 @@
           class="result-video" 
           src="{{response.video_url}}" 
           poster="{{response.cover_url}}"
+          binderror="onVideoError"
           controls
         />
       </view>

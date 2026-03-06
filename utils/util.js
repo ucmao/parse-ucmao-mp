@@ -173,7 +173,6 @@ async function refreshVideo(videoId, platform, data, updateDataCallback) {
         platform: platform
       }
     });
-    console.log('Received response:', response);
     if (response.retcode !== 200) {
       showToast('去水印失败', 'none');
     } else {

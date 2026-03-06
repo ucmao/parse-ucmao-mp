@@ -29,6 +29,7 @@ Page({
     totalCount: 0, // 累计解析数据
     statusBarHeight: 0,
     navBarHeight: 0,
+    hasRetried: false, // 标记当前展示的视频是否已尝试重试
   },
 
   onLoad: function() {
@@ -38,9 +39,10 @@ Page({
 
   // 计算导航栏高度
   setNavSize: function() {
-    const sysinfo = wx.getSystemInfoSync();
-    const statusHeight = sysinfo.statusBarHeight;
-    const isiOS = sysinfo.system.indexOf('iOS') > -1;
+    const windowInfo = wx.getWindowInfo();
+    const deviceInfo = wx.getDeviceInfo();
+    const statusHeight = windowInfo.statusBarHeight;
+    const isiOS = deviceInfo.system.indexOf('iOS') > -1;
     const navHeight = isiOS ? 44 : 48; // iOS 导航栏高度 44，Android 48
 
     this.setData({
@@ -108,6 +110,7 @@ Page({
       isButtonDisabled: true,
       isLoading: true,
       showWhiteBackground: false,
+      hasRetried: false, // 每次新解析都重置重试状态
       response: {
         video_url: '',
         title: '',
@@ -134,14 +137,12 @@ Page({
       return;
     }
     try {
-      console.log('Sending request with data:', { text: url });
       const response = await request('/api/parse', {
         method: 'POST',
         data: {
           text: url
         }
       });
-      console.log('Received response:', response);
       if (response.retcode !== 200) {
         showToast(response.retdesc, 'none', 2000);
       } else {
@@ -164,7 +165,6 @@ Page({
           });
           // 同时更新本地缓存
           updateStorageCurrent(this.data.totalCount);
-          console.log('data', data);
         }
       }
     } catch (error) {
@@ -214,7 +214,6 @@ Page({
           copyToClipboard(cover_url, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
         } else {
           uploadScore([video_id], 'imageDownload');
-          console.log('下载成功');
         }
       });
     } catch (error) {
@@ -273,7 +272,6 @@ Page({
         imageUrl: shareImageUrl,
         success: (res) => {
           uploadScore([video_id], 'shareFriend');
-          console.log('分享成功', res);
         },
         fail: (err) => {
           console.error('分享失败', err);
@@ -284,7 +282,6 @@ Page({
         title: '发现一个超好用的去水印神器，免费还快！',
         path: '/pages/index/index',
         success: (res) => {
-          console.log('右上角分享成功', res);
         },
         fail: (err) => {
           console.error('右上角分享失败', err);
@@ -310,7 +307,6 @@ Page({
         imageUrl: shareImageUrl,
         success: (res) => {
           uploadScore([video_id], 'shareTimeline');
-          console.log('分享成功', res);
         },
         fail: function (err) {
           console.error('分享失败', err);
@@ -321,7 +317,6 @@ Page({
         title: '分享一个我一直在用的去水印神器',
         query: '/pages/index/index',
         success: (res) => {
-          console.log('分享成功', res);
         },
         fail: function (err) {
           console.error('分享失败', err);
@@ -334,6 +329,33 @@ Page({
     wx.navigateTo({
       url: '/pages/questions/questions'
     });
+  },
+
+  onVideoError: function(e) {
+    console.error('Index video error:', e.detail);
+    
+    // 如果没有重试过，且当前有视频地址，则尝试自动重试一次
+    if (!this.data.hasRetried && this.data.response.video_url) {
+      console.log('首页视频加载失败，正在尝试自动重试...');
+      
+      const { response } = this.data;
+      const originalUrl = response.video_url;
+      const retryUrl = originalUrl.includes('?') 
+        ? `${originalUrl}&retry=${Date.now()}` 
+        : `${originalUrl}?retry=${Date.now()}`;
+      
+      this.setData({
+        hasRetried: true,
+        'response.video_url': retryUrl
+      });
+    } else {
+      // 依然失败则给用户提示
+      wx.showToast({
+        title: '视频加载不稳定，建议尝试手动保存',
+        icon: 'none',
+        duration: 2500
+      });
+    }
   },
 
 });
