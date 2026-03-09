@@ -17,8 +17,9 @@
 
 MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 
-
-
+<p align="center">
+  <img src="images/Interface.webp" width="600" alt="MiniParse 界面预览">
+</p>
 
 通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
 
@@ -34,7 +35,7 @@ MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 * **⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
 
 <p align="center">
-<img src="qr_code.webp" width="200" alt="MiniParse太阳码">
+<img src="images/qr_code.webp" width="200" alt="MiniParse太阳码">
 </p>
 
 > **协作提示**：本仓库仅包含前端小程序代码。如需实现核心解析功能，请配合部署上述后端服务。
