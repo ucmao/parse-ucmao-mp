@@ -31,7 +31,7 @@ MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 
 欢迎扫码体验本项目的实际功能和效果：
 
-* **🧩 小程序端**：请扫描下方太阳码进行体验（被同行举报下架了...）
+* **🧩 小程序端**：请扫描下方太阳码进行体验
 * **⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
 
 <p align="center">
