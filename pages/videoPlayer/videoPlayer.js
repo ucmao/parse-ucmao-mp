@@ -89,9 +89,6 @@ Page({
     const title = this.data.title;
     const videoId = this.data.videoId;
     
-    // 动态生成带播放按钮的分享封面地址
-    const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${videoId}&cover_url=${encodeURIComponent(coverUrl)}`;
-
     // 返回分享配置
     return {
       title: truncateString(title, 35) || '这个视频太赞了，快来看看！',
@@ -100,7 +97,7 @@ Page({
             `videoid=${encodeURIComponent(videoId)}&` +
             `title=${encodeURIComponent(title)}&` +
             `fromShare=true`,
-      imageUrl: shareImageUrl,
+      imageUrl: coverUrl,
       success: (res) => {
         // 转发成功时执行
       },
@@ -118,9 +115,6 @@ Page({
     const title = this.data.title;
     const videoId = this.data.videoId;
 
-    // 动态生成带播放按钮的分享封面地址
-    const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${videoId}&cover_url=${encodeURIComponent(coverUrl)}`;
-
     // 返回分享配置
     return {
       title: '分享一个我一直在用的去水印神器',
@@ -129,7 +123,7 @@ Page({
              `videoid=${encodeURIComponent(videoId)}&`+
              `title=${encodeURIComponent(title)}&`+
              `fromShare=true`,
-      imageUrl: shareImageUrl,
+      imageUrl: coverUrl,
       success: (res) => {
         // 转发成功时执行
       },

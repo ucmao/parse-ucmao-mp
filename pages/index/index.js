@@ -225,9 +225,6 @@ Page({
   onShareAppMessage: function () {
     const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
-      // 动态生成带播放按钮的分享封面地址
-      const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${video_id}&cover_url=${encodeURIComponent(cover_url)}`;
-      
       return {
         title: truncateString(title, 35) || '这个视频太赞了，快来看看！',
         path: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
@@ -236,7 +233,7 @@ Page({
               `videoid=${encodeURIComponent(video_id)}&`+
               `heat=${encodeURIComponent(heat || 0)}&`+
               `fromShare=true`,
-        imageUrl: shareImageUrl,
+        imageUrl: cover_url,
         success: (res) => {
         },
         fail: (err) => {
@@ -259,9 +256,6 @@ Page({
   onShareTimeline: function () {
     const { video_url, cover_url, title, video_id, heat } = this.data.response;
     if (video_url) {
-      // 动态生成带播放按钮的分享封面地址
-      const shareImageUrl = `${config.baseURL}/api/share/cover_image?video_id=${video_id}&cover_url=${encodeURIComponent(cover_url)}`;
-
       return {
         title: '分享一个我一直在用的去水印神器',
         query: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
@@ -270,7 +264,7 @@ Page({
                `videoid=${encodeURIComponent(video_id)}&`+
                `heat=${encodeURIComponent(heat || 0)}&`+
                `fromShare=true`,
-        imageUrl: shareImageUrl,
+        imageUrl: cover_url,
         success: (res) => {
         },
         fail: function (err) {
