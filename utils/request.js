@@ -1,40 +1,10 @@
-import { generateComplexText, vigenereEncrypt, timestampToLetters } from './util.js';
-import { generateTimestamp } from './time.js';
 import config from './config.js';
-
-// 生成请求头信息
-function generateHeaders() {
-  const timestamp = generateTimestamp().toString();
-  const originalText = generateComplexText();
-  const key = timestampToLetters(timestamp);
-  const encryptedText = vigenereEncrypt(originalText, key);
-  const openid = wx.getStorageSync('openid') || '';
-  
-  return {
-    'X-Timestamp': timestamp,
-    'X-GCLT-Text': originalText,
-    'X-EGCT-Text': encryptedText,
-    'WX-OPEN-ID': openid
-  };
-}
 
 // 请求工具函数
 function request(url, options = {}, retryCount = 0) {
   return new Promise((resolve, reject) => {
     // 处理URL，如果不是完整URL则添加baseURL
     const fullUrl = url.startsWith('http') ? url : `${config.baseURL}${url}`;
-    
-    // 合并请求头
-    const requestHeaders = {
-      ...generateHeaders(),
-      ...options.header
-    };
-    
-    // 构建请求参数
-    const requestOptions = {
-      ...options,
-      header: requestHeaders
-    };
     
     // 超时处理
     const timeoutId = setTimeout(() => {
@@ -44,7 +14,7 @@ function request(url, options = {}, retryCount = 0) {
     // 创建请求任务
     const requestTask = wx.request({
       url: fullUrl,
-      ...requestOptions,
+      ...options,
       success(res) {
         clearTimeout(timeoutId);
         
@@ -86,5 +56,4 @@ function request(url, options = {}, retryCount = 0) {
   });
 };
 
-// 导出请求工具和配置
 export { request, config };

@@ -2,9 +2,7 @@ import { request, config } from '../../utils/request';
 import { getClipboardData, copyToClipboard } from '../../utils/clipboard';
 import { extractUrl, truncateString } from '../../utils/util';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
-import { uploadScore } from '../../utils/score';
 import { showToast, showConfirmModal } from '../../utils/ui';
-import { updateStorageCurrent } from '../../utils/storage';
 
 Page({
   data: {
@@ -34,7 +32,6 @@ Page({
 
   onLoad: function() {
     this.setNavSize();
-    this.fetchTotalCount();
   },
 
   // 计算导航栏高度
@@ -59,23 +56,6 @@ Page({
   },
 
   onUnload: function() {
-  },
-
-  fetchTotalCount: function() {
-    request('/api/records', {
-      method: 'POST',
-      data: { searchQuery: '' }
-    })
-    .then(res => {
-      if (res.retcode === 200 && res.ranking) {
-        const count = res.ranking.length || 0;
-        updateStorageCurrent(count);
-        this.setData({ totalCount: count });
-      }
-    })
-    .catch(err => {
-      console.error('Fetch total count error:', err);
-    });
   },
 
   onInput: function(e) {
@@ -147,9 +127,6 @@ Page({
         showToast(response.retdesc, 'none', 2000);
       } else {
         const data = response.data;
-        if (data.video_id) {
-          uploadScore([data.video_id], 'parse');
-        }
         if (data.video_url === null && data.title === null && data.cover_url === null) {
           showToast('无法获取到该视频信息，请稍后再试', 'none', 2000);
         } else {
@@ -160,11 +137,8 @@ Page({
             showCoverButton: !!data.cover_url,
             showSaveVideoButton: !!data.video_url,
             showSaveCoverButton: !!data.cover_url,
-            showWhiteBackground: true,
-            totalCount: this.data.totalCount + 1 // 解析成功后计数加1
+            showWhiteBackground: true
           });
-          // 同时更新本地缓存
-          updateStorageCurrent(this.data.totalCount);
         }
       }
     } catch (error) {
@@ -197,7 +171,6 @@ Page({
   async downloadVideo() {
     try {
       const { video_url, video_id } = this.data.response;
-      uploadScore([video_id], 'videoDownload');
       const message = await downloadVideoToPhotosAlbum(video_url, video_id);
       showToast(message, 'success');
     } catch (error) {
@@ -212,8 +185,6 @@ Page({
       downloadCoverToPhotosAlbum(cover_url, true, (error) => {
         if (error) {
           copyToClipboard(cover_url, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
-        } else {
-          uploadScore([video_id], 'imageDownload');
         }
       });
     } catch (error) {
@@ -222,33 +193,29 @@ Page({
   },
 
   copyAllInfo() {
-    const { title, cover_url, video_url, video_id } = this.data.response;
+    const { title, cover_url, video_url } = this.data.response;
     let content = `标题：${title || '无'}\n`;
     content += `封面：${cover_url || '无'}\n`;
     content += `视频：${video_url || '无'}`;
     copyToClipboard(content, { title: '全部信息已复制' });
-    uploadScore([video_id], 'copyAllInfo');
   },
 
   copyTitle() {
-    const { title, video_id } = this.data.response;
+    const { title } = this.data.response;
     let content = `${title || '无'}`;
     copyToClipboard(content, { title: '标题已复制' });
-    uploadScore([video_id], 'copyTitle');
   },
 
   copyCoverUrl() {
-    const { cover_url, video_id } = this.data.response;
+    const { cover_url } = this.data.response;
     let content = `${cover_url || '无'}`;
     copyToClipboard(content, { title: '封面链接已复制' });
-    uploadScore([video_id], 'copyCoverUrl');
   },
 
   copyVideoUrl() {
-    const { video_url, video_id } = this.data.response;
+    const { video_url } = this.data.response;
     let content = `${video_url || '无'}`;
     copyToClipboard(content, { title: '视频链接已复制' });
-    uploadScore([video_id], 'copyVideoUrl');
   },
 
   showDisclaimer() {
@@ -271,7 +238,6 @@ Page({
               `fromShare=true`,
         imageUrl: shareImageUrl,
         success: (res) => {
-          uploadScore([video_id], 'shareFriend');
         },
         fail: (err) => {
           console.error('分享失败', err);
@@ -306,7 +272,6 @@ Page({
                `fromShare=true`,
         imageUrl: shareImageUrl,
         success: (res) => {
-          uploadScore([video_id], 'shareTimeline');
         },
         fail: function (err) {
           console.error('分享失败', err);

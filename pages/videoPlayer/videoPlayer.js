@@ -1,6 +1,5 @@
 import { copyToClipboard } from '../../utils/clipboard';
 import { downloadCoverToPhotosAlbum, downloadVideoToPhotosAlbum } from '../../utils/file';
-import { uploadScore } from '../../utils/score';
 import { truncateString } from '../../utils/util';
 import config from '../../utils/config';
 
@@ -23,7 +22,6 @@ Page({
     const { url, cover, title, videoid, fromShare, heat} = options;
     const decodedVideoId = videoid ? decodeURIComponent(videoid) : '';
     if (url) {
-      uploadScore([decodedVideoId], 'validPlay');
 
       // 检查是否显示过提示
       const hasSeenTips = wx.getStorageSync('hasSeenVideoTips');
@@ -105,7 +103,6 @@ Page({
       imageUrl: shareImageUrl,
       success: (res) => {
         // 转发成功时执行
-        uploadScore([videoId], 'shareFriend');
       },
       fail: function (err) {
         // 转发失败时执行
@@ -135,7 +132,6 @@ Page({
       imageUrl: shareImageUrl,
       success: (res) => {
         // 转发成功时执行
-        uploadScore([videoId], 'shareTimeline');
       },
       fail: function (err) {
         // 转发失败时执行
@@ -158,15 +154,12 @@ Page({
             if (error) {
               console.error('下载封面失败:', error);
               copyToClipboard(coverUrl, { title: '下载失败: 封面地址已复制，您可以尝试手动下载', icon: 'none' });
-            } else {
-              uploadScore([videoId], 'imageDownload');
             }
           });
         } else if (res.tapIndex === 1) {
           // 保存视频
           downloadVideoToPhotosAlbum(videoUrl, videoId)
             .then((message) => {
-              uploadScore([videoId], 'videoDownload');
               wx.showToast({ title: message, icon: 'success' });
             })
             .catch((error) => {
@@ -192,7 +185,6 @@ Page({
       success: (res) => {
         if (res.confirm) {
           copyToClipboard(title, { title: '文案已复制' });
-          uploadScore([videoId], 'copyTitle');
         }
       }
     });
