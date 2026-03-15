@@ -2,7 +2,7 @@
 
 <img src="images/logo.png" width="120" height="auto" alt="MiniParse Logo">
 
-# 🚀 MiniParse (parse-ucmao-mp)
+# 🚀 MiniParse (media-parser-mp)
 
 **高性能多平台短视频去水印微信小程序前端（Starter 极简版）**
 
@@ -78,8 +78,8 @@ MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 ### 2. 获取源码
 
 ```bash
-git clone https://github.com/ucmao/parse-ucmao-mp.git
-cd parse-ucmao-mp
+git clone https://github.com/ucmao/media-parser-mp.git
+cd media-parser-mp
 
 ```
 
@@ -98,7 +98,7 @@ cd parse-ucmao-mp
 ## 📂 项目结构
 
 ```text
-parse-ucmao-mp/
+media-parser-mp/
 ├── pages/                  # 业务页面目录
 │   ├── index/             # 首页：链接输入与解析核心页
 │   └── videoPlayer/       # 播放：预览去水印后的视频
@@ -121,7 +121,7 @@ parse-ucmao-mp/
 * **微信 (WeChat)**：csdnxr
 * **QQ**：294323976
 * **邮箱 (Email)**：leoucmao@gmail.com
-* **Bug反馈**：[GitHub Issues](https://github.com/ucmao/parse-ucmao-mp/issues)
+* **Bug反馈**：[GitHub Issues](https://github.com/ucmao/media-parser-mp/issues)
 
 ---
 
