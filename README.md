@@ -4,7 +4,7 @@
 
 # 🚀 MiniParse (parse-ucmao-mp)
 
-**高性能多平台短视频去水印微信小程序前端**
+**高性能多平台短视频去水印微信小程序前端（Starter 极简版）**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-微信小程序-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8+%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
 
@@ -44,18 +44,14 @@ MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 
 ## 💎 核心功能逻辑
 
-* **多平台解析支持**：全面覆盖抖音、快手、小红书、B站、皮皮搞笑等 8+ 主流平台。
 * **无损去水印流程**：
-* **智能提取**：粘贴分享链接后，前端通过加密机制调用后端 `/api/parse` 接口。
+* **智能提取**：粘贴分享链接后，前端通过 API 调用后端 `/api/parse` 接口。
 * **高清下载**：支持将处理后的无水印视频或封面直接保存至手机系统相册。
 
 
-* **安全请求机制**：
-* **动态加密**：采用 **Vigenère 加密算法** 配合动态时间戳生成密钥，确保接口调用安全。
-* **请求封装**：所有 API 请求均通过 `utils/request.js` 进行统一拦截与加密处理。
-
-
-* **内容生态功能**：内置热门视频榜单展示及常见问题指引，提升用户留存与交互体验。
+* **极简代码结构**：
+* **去除冗余页面**：本 Starter 版本只保留了主页和播放页，去除了复杂的排名和个人中心。
+* **无加密门槛**：去除了原先动态的请求签权和防网络刷量机制，回归淳朴的 `wx.request`，大幅缩减阅读代码的负担。
 
 ---
 
@@ -66,7 +62,6 @@ MiniParse是一款专为创作者打造的**短视频素材获取工具**。
 | **底层框架** | **微信小程序原生框架** | 确保最佳性能与原生交互体验 |
 | **核心语言** | JavaScript, WXML, WXSS | 标准小程序开发技术栈 |
 | **基础库版本** | 3.10.1+ | 适配最新微信 API 特性 |
-| **安全层** | Vigenère 加密算法 | 基于时间戳的请求安全校验 |
 | **构建工具** | 微信开发者工具 | 官方标准开发与调试环境 |
 
 ---
@@ -106,18 +101,15 @@ cd parse-ucmao-mp
 parse-ucmao-mp/
 ├── pages/                  # 业务页面目录
 │   ├── index/             # 首页：链接输入与解析核心页
-│   ├── ranking/           # 榜单：热门视频展示
-│   ├── videoPlayer/       # 播放：预览去水印后的视频
-│   └── user/              # 我的：个人中心与设置
+│   └── videoPlayer/       # 播放：预览去水印后的视频
 ├── utils/                 # 工具类封装
-│   ├── request.js         # 核心：封装加密请求机制
+│   ├── request.js         # 核心：标准网络请求
 │   ├── file.js            # 功能：处理文件下载与相册保存
 │   ├── clipboard.js       # 辅助：处理剪贴板粘贴逻辑
-│   └── util.js            # 算法：加密算法与字符串处理
+│   └── util.js            # 算法：字符串处理等工具
 ├── images/                 # 静态资源图标与背景
 ├── app.js/json/wxss        # 小程序全局逻辑、配置与样式
 └── project.config.json     # 开发者工具项目配置文件
-
 ```
 
 ---
