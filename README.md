@@ -1,46 +1,27 @@
 <div align="center">
 
-<img src="images/logo.png" width="120" height="auto" alt="MiniParse Logo">
+# 去水印小程序 (media-parser-mp)
 
-# 🚀 MiniParse (media-parser-mp)
+<p align="center">
+  <img src="images/Interface.webp" width="600" alt="去水印小程序 界面预览">
+</p>
 
 **高性能多平台短视频去水印微信小程序前端（Starter 极简版）**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-微信小程序-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8+%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
 
 <p align="center">
-<a href="#-立即体验">立即体验</a> •
 <a href="#-核心功能逻辑">功能逻辑</a> •
 <a href="#-快速开始">部署指南</a> •
 <a href="#-联系作者">联系作者</a>
 </p>
 
-MiniParse是一款专为创作者打造的**短视频素材获取工具**。
-
-<p align="center">
-  <img src="images/Interface.webp" width="600" alt="MiniParse 界面预览">
-</p>
+去水印小程序是一款专为创作者打造的**短视频素材获取工具**。
 
 通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
+**⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
 
 </div>
-
----
-
-## 📱 立即体验
-
-欢迎扫码体验本项目的实际功能和效果：
-
-* **🧩 小程序端**：请扫描下方太阳码进行体验
-* **⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
-
-<p align="center">
-<img src="images/qr_code.webp" width="200" alt="MiniParse太阳码">
-</p>
-
-> **协作提示**：本仓库仅包含前端小程序代码。如需实现核心解析功能，请配合部署上述后端服务。
-
----
 
 ## 💎 核心功能逻辑
 
@@ -118,9 +99,9 @@ media-parser-mp/
 
 如果您在安装、使用过程中遇到问题，或有定制需求，请通过以下方式联系：
 
-* **微信 (WeChat)**：csdnxr
+* **微信**：csdnxr
 * **QQ**：294323976
-* **邮箱 (Email)**：leoucmao@gmail.com
+* **邮箱**：leoucmao@gmail.com
 * **Bug反馈**：[GitHub Issues](https://github.com/ucmao/media-parser-mp/issues)
 
 ---
@@ -130,6 +111,6 @@ media-parser-mp/
 1. 本项目基于 **[MIT LICENSE](LICENSE)** 协议开源。
 2. **免责声明**：本项目仅供技术研究和学习交流使用。严禁用于任何违反法律法规的行为，由滥用本项目造成的后果由使用者自行承担。
 
-**MiniParse** - 高效解析，赋能创作。 🎬✨
+**去水印小程序** - 高效解析，赋能创作。 🎬✨
 
 ---

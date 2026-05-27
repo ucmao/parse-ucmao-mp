@@ -30,12 +30,12 @@ Page({
     hasRetried: false, // 标记当前展示的视频是否已尝试重试
   },
 
-  onLoad: function() {
+  onLoad: function () {
     this.setNavSize();
   },
 
   // 计算导航栏高度
-  setNavSize: function() {
+  setNavSize: function () {
     const windowInfo = wx.getWindowInfo();
     const deviceInfo = wx.getDeviceInfo();
     const statusHeight = windowInfo.statusBarHeight;
@@ -48,23 +48,23 @@ Page({
     });
   },
 
-  onShow: function() {
+  onShow: function () {
     // 每次进入页面刷新统计
   },
 
-  onHide: function() {
+  onHide: function () {
   },
 
-  onUnload: function() {
+  onUnload: function () {
   },
 
-  onInput: function(e) {
+  onInput: function (e) {
     this.setData({
       inputValue: e.detail.value
     });
   },
 
-  doPaste: async function() {
+  doPaste: async function () {
     try {
       const data = await getClipboardData();
       this.setData({
@@ -76,7 +76,7 @@ Page({
       showToast('剪贴板无内容', 'none', 1500);
     }
   },
-  
+
   async onSubmit() {
     if (this.data.isButtonDisabled) return;
     this.setData({
@@ -219,7 +219,7 @@ Page({
   },
 
   showDisclaimer() {
-    showConfirmModal("去水印说明", "MiniParse作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归原平台及作者所有。MiniParse致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。", (res) => {}, { showCancel: false, confirmText: "确定" });
+    showConfirmModal("去水印说明", "去水印小程序作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归原平台及作者所有。去水印小程序致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。", (res) => { }, { showCancel: false, confirmText: "确定" });
   },
 
   onShareAppMessage: function () {
@@ -227,12 +227,12 @@ Page({
     if (video_url) {
       return {
         title: truncateString(title, 35) || '这个视频太赞了，快来看看！',
-        path: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
-              `cover=${encodeURIComponent(cover_url)}&`+
-              `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
-              `videoid=${encodeURIComponent(video_id)}&`+
-              `heat=${encodeURIComponent(heat || 0)}&`+
-              `fromShare=true`,
+        path: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&` +
+          `cover=${encodeURIComponent(cover_url)}&` +
+          `title=${encodeURIComponent(truncateString(title, 80, ''))}&` +
+          `videoid=${encodeURIComponent(video_id)}&` +
+          `heat=${encodeURIComponent(heat || 0)}&` +
+          `fromShare=true`,
         imageUrl: cover_url,
         success: (res) => {
         },
@@ -258,12 +258,12 @@ Page({
     if (video_url) {
       return {
         title: '分享一个我一直在用的去水印神器',
-        query: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&`+
-               `cover=${encodeURIComponent(cover_url)}&`+
-               `title=${encodeURIComponent(truncateString(title, 80, ''))}&`+
-               `videoid=${encodeURIComponent(video_id)}&`+
-               `heat=${encodeURIComponent(heat || 0)}&`+
-               `fromShare=true`,
+        query: `/pages/videoPlayer/videoPlayer?url=${encodeURIComponent(video_url)}&` +
+          `cover=${encodeURIComponent(cover_url)}&` +
+          `title=${encodeURIComponent(truncateString(title, 80, ''))}&` +
+          `videoid=${encodeURIComponent(video_id)}&` +
+          `heat=${encodeURIComponent(heat || 0)}&` +
+          `fromShare=true`,
         imageUrl: cover_url,
         success: (res) => {
         },
@@ -283,26 +283,26 @@ Page({
       };
     }
   },
-  
-  navigateToQuestions: function() {
+
+  navigateToQuestions: function () {
     wx.navigateTo({
       url: '/pages/questions/questions'
     });
   },
 
-  onVideoError: function(e) {
+  onVideoError: function (e) {
     console.error('Index video error:', e.detail);
-    
+
     // 如果没有重试过，且当前有视频地址，则尝试自动重试一次
     if (!this.data.hasRetried && this.data.response.video_url) {
       console.log('首页视频加载失败，正在尝试自动重试...');
-      
+
       const { response } = this.data;
       const originalUrl = response.video_url;
-      const retryUrl = originalUrl.includes('?') 
-        ? `${originalUrl}&retry=${Date.now()}` 
+      const retryUrl = originalUrl.includes('?')
+        ? `${originalUrl}&retry=${Date.now()}`
         : `${originalUrl}?retry=${Date.now()}`;
-      
+
       this.setData({
         hasRetried: true,
         'response.video_url': retryUrl

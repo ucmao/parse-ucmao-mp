@@ -1,4 +1,4 @@
-/**app.wxss - MiniParse 全局设计 token 与基础样式 **/
+/**app.wxss - 去水印小程序 全局设计 token 与基础样式 **/
 
 /* 设计 token（极简精致流：统一圆角 大容器18px/按钮10px，细腻阴影） */
 page {
