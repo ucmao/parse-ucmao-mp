@@ -19,18 +19,19 @@
 去水印小程序是一款专为创作者打造的**短视频素材获取工具**。
 
 通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
-**⚙️ 后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
+
+**后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
 
 </div>
 
 ## 💎 核心功能逻辑
 
-* **无损去水印流程**：
+### **无损去水印流程**：
 * **智能提取**：粘贴分享链接后，前端通过 API 调用后端 `/api/parse` 接口。
 * **高清下载**：支持将处理后的无水印视频或封面直接保存至手机系统相册。
 
 
-* **极简代码结构**：
+### **极简代码结构**：
 * **去除冗余页面**：本 Starter 版本只保留了主页和播放页，去除了复杂的排名和个人中心。
 * **无加密门槛**：去除了原先动态的请求签权和防网络刷量机制，回归淳朴的 `wx.request`，大幅缩减阅读代码的负担。
 
