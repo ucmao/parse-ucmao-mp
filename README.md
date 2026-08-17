@@ -3,7 +3,7 @@
 # MiniParse
 
 <p align="center">
-  <img src="images/Interface.webp" width="600" alt="去水印小程序 界面预览">
+  <img src="images/logo.png" width="200" alt="MiniParse LOGO">
 </p>
 
 **高性能多平台短视频去水印微信小程序前端（Starter 极简版）**
@@ -16,7 +16,7 @@
 <a href="#-联系作者">联系作者</a>
 </p>
 
-去水印小程序是一款专为创作者打造的**短视频素材获取工具**。
+MiniParse 是一款专为创作者打造的素材获取微信小程序，提供高效的短视频解析服务。
 
 通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
 
@@ -25,6 +25,12 @@
 </div>
 
 ## 💎 核心功能逻辑
+
+### 📱 界面预览
+
+<p align="center">
+  <img src="images/Interface.webp" width="600" alt="MiniParse 界面预览">
+</p>
 
 ### **无损去水印流程**：
 * **智能提取**：粘贴分享链接后，前端通过 API 调用后端 `/api/parse` 接口。
@@ -112,6 +118,6 @@ MiniParse/
 1. 本项目基于 **[MIT LICENSE](LICENSE)** 协议开源。
 2. **免责声明**：本项目仅供技术研究和学习交流使用。严禁用于任何违反法律法规的行为，由滥用本项目造成的后果由使用者自行承担。
 
-**去水印小程序** - 高效解析，赋能创作。 🎬✨
+**MiniParse** - 高效解析，赋能创作。 🎬✨
 
 ---

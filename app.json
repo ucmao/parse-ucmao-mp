@@ -4,7 +4,8 @@
     "pages/videoPlayer/videoPlayer"
   ],
   "window": {
-    "navigationBarTitleText": "去水印小程序"
+  "navigationBarTitleText": "MiniParse"
   },
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2"
 }

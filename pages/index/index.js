@@ -219,7 +219,7 @@ Page({
   },
 
   showDisclaimer() {
-    showConfirmModal("去水印说明", "去水印小程序作为中立的技术服务提供者，旨在协助用户个人学习与素材赏析。我们郑重提醒用户，务必合法使用，任何因滥用而导致的侵权行为，责任将由用户自行承担。本程序不存储任何数字影像，资料版权归原平台及作者所有。去水印小程序致力于与用户携手，共同维护一个健康、积极的网络环境。此声明适用于本服务的所有功能。", (res) => { }, { showCancel: false, confirmText: "确定" });
+    showConfirmModal("MiniParse 说明", "MiniParse 作为中立的技术服务提供者，帮助用户学习与素材赏析。请合法使用，避免侵权；本程序不存储视频，版权归原平台及作者所有。MiniParse 致力于维护健康、积极的网络环境，适用于所有功能。", (res) => { }, { showCancel: false, confirmText: "确定" });
   },
 
   onShareAppMessage: function () {
@@ -242,7 +242,7 @@ Page({
       };
     } else {
       return {
-        title: '发现一个超好用的去水印神器，免费还快！',
+        title: '发现一个超好用的 MiniParse 素材获取神器，免费还快！',
         path: '/pages/index/index',
         success: (res) => {
         },
