@@ -1,6 +1,6 @@
 <div align="center">
 
-# 去水印小程序 (media-parser-mp)
+# MiniParse
 
 <p align="center">
   <img src="images/Interface.webp" width="600" alt="去水印小程序 界面预览">
@@ -8,7 +8,7 @@
 
 **高性能多平台短视频去水印微信小程序前端（Starter 极简版）**
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-微信小程序-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8+%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Platform](https://img.shields.io/badge/platform-%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-brightgreen.svg)](https://mp.weixin.qq.com/) [![JS](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![Support](https://img.shields.io/badge/support-8%2B%20Platforms-brightgreen.svg)](#💎-核心功能逻辑)
 
 <p align="center">
 <a href="#-核心功能逻辑">功能逻辑</a> •
@@ -20,7 +20,7 @@
 
 通过简洁的交互界面，支持抖音、快手、小红书等主流平台，助你一键获取无水印高清视频。
 
-**后端源码**: [https://github.com/ucmao/parse-ucmao-backend](https://github.com/ucmao/parse-ucmao-backend)
+**后端源码**: [https://github.com/ucmao/media-parser](https://github.com/ucmao/media-parser)（通用小程序解析后端，可供参考）
 
 </div>
 
@@ -60,8 +60,8 @@
 ### 2. 获取源码
 
 ```bash
-git clone https://github.com/ucmao/media-parser-mp.git
-cd media-parser-mp
+git clone https://github.com/ucmao/MiniParse.git
+cd MiniParse
 
 ```
 
@@ -80,7 +80,7 @@ cd media-parser-mp
 ## 📂 项目结构
 
 ```text
-media-parser-mp/
+MiniParse/
 ├── pages/                  # 业务页面目录
 │   ├── index/             # 首页：链接输入与解析核心页
 │   └── videoPlayer/       # 播放：预览去水印后的视频
@@ -103,7 +103,7 @@ media-parser-mp/
 * **微信**：csdnxr
 * **QQ**：294323976
 * **邮箱**：leoucmao@gmail.com
-* **Bug反馈**：[GitHub Issues](https://github.com/ucmao/media-parser-mp/issues)
+* **Bug反馈**：[GitHub Issues](https://github.com/ucmao/MiniParse/issues)
 
 ---
 
