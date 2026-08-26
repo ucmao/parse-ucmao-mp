@@ -3,7 +3,7 @@
 
 # 迷你去水印 (MiniParse) 🎬
 
-**多平台短视频去水印微信小程序前端 · Starter 极简版**
+**多平台短视频去水印微信小程序前端**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-WeChat%20Mini%20Program-07C160.svg?logo=wechat&logoColor=white)](https://mp.weixin.qq.com/)
@@ -42,7 +42,7 @@
 * **高清下载**：支持将处理后的无水印视频或封面直接保存至手机系统相册。
 
 ### **极简代码结构**：
-* **去除冗余页面**：本 Starter 版本只保留了主页和播放页，去除了复杂的排名和个人中心。
+* **去除冗余页面**：只保留了主页和播放页，去除了复杂的排名和个人中心。
 * **无加密门槛**：去除了原先动态的请求签权和防网络刷量机制，回归淳朴的 `wx.request`，大幅缩减阅读代码的负担。
 
 ---
