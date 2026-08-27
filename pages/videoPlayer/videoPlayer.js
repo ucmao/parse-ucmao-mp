@@ -60,15 +60,9 @@ Page({
 
   closeVideo: function () {
     if (this.data.fromShare) {
-      // 在跳转前存储参数
-      const app = getApp();
-      app.globalData.rankingParams = {
-        appCurrentPeriod: 'all',
-        appSearchQuery: encodeURIComponent(this.data.title)
-      };
-      // 从分享进入，跳转到 ranking 页面，并传递参数
-      wx.switchTab({
-        url: `/pages/ranking/ranking`
+      // 分享链接没有可返回的页面栈，回到当前已注册的首页。
+      wx.reLaunch({
+        url: '/pages/index/index'
       });
     } else {
       // 正常返回上一页

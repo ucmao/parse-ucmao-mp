@@ -9,11 +9,12 @@
 [![Platform](https://img.shields.io/badge/platform-WeChat%20Mini%20Program-07C160.svg?logo=wechat&logoColor=white)](https://mp.weixin.qq.com/)
 [![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E.svg?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Base Library](https://img.shields.io/badge/base%20lib-3.10.1%2B-blue.svg)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
-[![Backend Platforms](https://img.shields.io/badge/backend-8%2B%20Platforms-orange.svg)](https://github.com/ucmao/media-parser)
+[![Backend Platforms](https://img.shields.io/badge/backend-26%2B%20Platforms-orange.svg)](https://github.com/ucmao/media-parser)
 
 <p align="center">
 <a href="#-核心特性">核心特性</a> •
 <a href="#-快速开始">快速开始</a> •
+<a href="#-第一版本范围">第一版本范围</a> •
 <a href="#-项目结构">项目结构</a> •
 <a href="#-联系作者">联系作者</a> •
 <a href="#️-开源协议--免责声明">开源协议</a>
@@ -39,10 +40,10 @@
 
 ### **无损去水印流程**：
 * **智能提取**：粘贴分享链接后，前端通过 API 调用后端 `/api/parse` 接口。
-* **高清下载**：直接下载 `/api/parse` 返回的媒体地址并保存到系统相册，不依赖旧版 `/api/download` 中转接口。
+* **高清下载**：直接下载解析结果中的媒体地址并保存到系统相册。
 
 ### **精简且可扩展的代码结构**：
-* **核心页面**：包含首页、播放页和可直接使用的问答页。
+* **核心页面**：包含首页、播放页和已注册的问答页；分享页关闭后会返回首页。
 * **历史模板**：`templates/legacy-pages/` 保留热门榜单与个人中心的历史页面源码，供二次开发参考；这些模板不参与当前小程序构建。
 * **无加密门槛**：只使用标准 `wx.request` 请求 `/api/parse`，没有动态签名、加密参数或专有鉴权协议。
 
@@ -68,24 +69,44 @@ git clone https://github.com/ucmao/mini-parse.git
 cd mini-parse
 ```
 
-### 2. 🚨 重要配置
+### 2. 部署后端
+
+本项目只依赖 [media-parser](https://github.com/ucmao/media-parser) 的 `POST /api/parse` 接口。可在后端仓库中使用 Docker 启动：
+
+```bash
+git clone https://github.com/ucmao/media-parser.git
+cd media-parser
+docker-compose up -d --build
+```
+
+服务默认监听 `8051` 端口。生产环境请使用 Nginx、Caddy 等反向代理提供公网 HTTPS 域名；微信小程序发布版不能直接请求本机地址或裸 IP。
+
+### 3. 配置小程序
 
 克隆后，在运行前请务必完成以下替换：
 
 * **AppID**：在 `project.config.json` 中填入你自己的微信小程序 AppID。
-* **API 域名**：修改 `utils/config.js` 中的 `baseURL`，指向你部署好的后端服务地址。
-* **服务端启动**：后端可直接按 [media-parser 的 Docker 部署说明](https://github.com/ucmao/media-parser#2-docker-%E9%83%A8%E7%BD%B2-%E6%8E%A8%E8%8D%90) 执行 `docker-compose up -d --build`；默认端口为 `8051`。
-* **微信域名配置**：在小程序后台将后端 HTTPS 域名加入“request 合法域名”。视频下载现在直连解析结果中的 CDN；发布前还需将实际返回的下载域名加入“downloadFile 合法域名”。不同平台 CDN 域名可能会变化，无法穷举时应在你自己的后端增加受限的下载代理。
+* **API 域名**：修改 `utils/config.js` 中的 `baseURL`，填写上一步配置好的 HTTPS 域名，例如 `https://parse.example.com`。
+* **请求域名**：在微信小程序后台将该域名加入“request 合法域名”。
+* **下载域名**：视频与封面会直连后端返回的 CDN 地址；发布前须将实际下载域名加入“downloadFile 合法域名”。如 CDN 域名无法固定，应在你自己的后端增加受限下载代理。
 
-### 3. 导入项目
+### 4. 导入项目
 
 1. 打开 **微信开发者工具**。
 2. 点击 **「导入」**，选择本项目根目录。
 3. 确认 AppID 无误后点击导入。
 
-### 4. 预览调试
+### 5. 预览调试
 
 点击工具上方的 **「编译」** 按钮，即可在模拟器中体验去水印流程。
+
+---
+
+## 🧩 第一版本范围
+
+第一版本可完成“粘贴分享链接 → 解析 → 预览 → 保存视频或封面 → 查看使用指南”的闭环。
+
+不包含云端历史记录、账号资料、全站热门榜单与积分体系；这些界面保留为开发模板，但不会请求当前后端不存在的接口。
 
 ---
 
