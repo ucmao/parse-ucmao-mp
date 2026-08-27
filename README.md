@@ -1,7 +1,7 @@
 <div align="center">
-<img src="images/logo.png" width="120" height="auto" alt="MiniParse Logo">
+<img src="images/logo.png" width="120" height="auto" alt="mini-parse Logo">
 
-# 迷你去水印 (MiniParse) 🎬
+# 迷你去水印 (mini-parse) 🎬
 
 **多平台短视频去水印微信小程序前端**
 
@@ -34,15 +34,16 @@
 ### 📱 界面预览
 
 <p align="center">
-  <img src="images/Interface.webp" width="600" alt="MiniParse 界面预览">
+  <img src="images/Interface.webp" width="600" alt="mini-parse 界面预览">
 </p>
 
 ### **无损去水印流程**：
 * **智能提取**：粘贴分享链接后，前端通过 API 调用后端 `/api/parse` 接口。
 * **高清下载**：直接下载 `/api/parse` 返回的媒体地址并保存到系统相册，不依赖旧版 `/api/download` 中转接口。
 
-### **极简代码结构**：
-* **去除冗余页面**：只保留了主页和播放页，去除了复杂的排名和个人中心。
+### **精简且可扩展的代码结构**：
+* **核心页面**：包含首页、播放页和可直接使用的问答页。
+* **历史模板**：`templates/legacy-pages/` 保留热门榜单与个人中心的历史页面源码，供二次开发参考；这些模板不参与当前小程序构建。
 * **无加密门槛**：只使用标准 `wx.request` 请求 `/api/parse`，没有动态签名、加密参数或专有鉴权协议。
 
 ---
@@ -63,8 +64,8 @@
 ### 1. 获取源码
 
 ```bash
-git clone https://github.com/ucmao/MiniParse.git
-cd MiniParse
+git clone https://github.com/ucmao/mini-parse.git
+cd mini-parse
 ```
 
 ### 2. 🚨 重要配置
@@ -91,10 +92,12 @@ cd MiniParse
 ## 📂 项目结构
 
 ```text
-MiniParse/
+mini-parse/
 ├── pages/                  # 业务页面目录
 │   ├── index/             # 首页：链接输入与解析核心页
-│   └── videoPlayer/       # 播放：预览去水印后的视频
+│   ├── videoPlayer/       # 播放：预览去水印后的视频
+│   └── questions/         # 使用指南与常见问题
+├── templates/legacy-pages/ # 未注册的历史页面开发模板
 ├── utils/                 # 工具类封装
 │   ├── request.js         # 核心：标准网络请求
 │   ├── file.js            # 功能：直连媒体地址下载并保存到相册
@@ -105,6 +108,12 @@ MiniParse/
 └── project.config.json     # 开发者工具项目配置文件
 ```
 
+### 历史页面模板
+
+`templates/legacy-pages/` 中保存了旧版“热门榜单”和“个人中心”的完整页面源码，仅作界面与交互参考，当前不会被小程序编译或注册。
+
+旧版模板依赖已经移除的 `/api/ranking`、`/api/records`、用户资料与上传等接口，以及 `utils/storage.js`、`utils/score.js`。现有 [media-parser](https://github.com/ucmao/media-parser) 后端只需接入 `/api/parse`；如需正式启用这些页面，请先以本地存储或新增后端接口替换旧依赖，再将对应页面加入 `app.json`。
+
 ---
 
 ## 📩 联系作者
@@ -114,7 +123,7 @@ MiniParse/
 * **微信**：csdnxr
 * **QQ**：294323976
 * **邮箱**：[leoucmao@gmail.com](mailto:leoucmao@gmail.com)
-* **Bug 反馈**：[GitHub Issues](https://github.com/ucmao/MiniParse/issues)
+* **Bug 反馈**：[GitHub Issues](https://github.com/ucmao/mini-parse/issues)
 
 ---
 

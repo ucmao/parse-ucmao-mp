@@ -1,0 +1,118 @@
+<view class="top-wrap" style="padding-top: {{statusBarHeight}}px;">
+  <view class="ranking-header-bg" />
+  <view class="custom-nav-bar" style="height: {{navBarHeight}}px;">
+    <image class="nav-title-img" src="../../images/title-ranking.png" mode="heightFix" />
+  </view>
+  <view class="header"></view>
+  <view class="top-wrap-content">
+    <view class="search-bar-wrap">
+      <view class="search-bar">
+        <image class="search-bar-cat" src="../../images/cat.png" mode="aspectFit" />
+        <view class="search-input-container">
+        <input class="search-input" placeholder="搜素材" value="{{inputValue}}" bindinput="onSearchInput"/>
+        <button class="clear-button" wx:if="{{inputValue}}" bindtap="onClearSearch"><text class="clear-text">×</text></button>
+      </view>
+      <button class="search-button" bindtap="onSearchButtonTap"><image src="../../images/search-icon.png" class="batch-icon" /></button>
+    </view>
+    </view>
+    <view class="tab-bar">
+      <scroll-view scroll-x="true" class="scroll-container" enable-flex="true">
+        <view class="tab-row">
+          <!-- <view class="tab-item {{currentPeriod === 'today' ? 'active' : ''}}" bindtap="switchPeriod" data-period="today">今天</view>
+          <view class="tab-item {{currentPeriod === 'yesterday' ? 'active' : ''}}" bindtap="switchPeriod" data-period="yesterday">昨天</view> -->
+          <view class="tab-item {{currentPeriod === '7days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="7days">近7天</view>
+          <view class="tab-item {{currentPeriod === '30days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="30days">近30天</view>
+          <!-- <view class="tab-item {{currentPeriod === 'thisMonth' ? 'active' : ''}}" bindtap="switchPeriod" data-period="thisMonth">本月</view>
+          <view class="tab-item {{currentPeriod === 'lastMonth' ? 'active' : ''}}" bindtap="switchPeriod" data-period="lastMonth">上月</view> -->
+          <!-- <view class="tab-item {{currentPeriod === '60days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="60days">近60天</view> -->
+          <view class="tab-item {{currentPeriod === '90days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="90days">近90天</view>
+          <view class="tab-item {{currentPeriod === '180days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="180days">近半年</view>
+          <view class="tab-item {{currentPeriod === '365days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="365days">近一年</view>
+          <view class="tab-item {{currentPeriod === 'all' ? 'active' : ''}}" bindtap="switchPeriod" data-period="all">全部</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>
+<view class="container">
+  <view class="search-history">
+    <scroll-view scroll-y class="history-list {{batchMode ? 'history-list-batch' : ''}}" bindscrolltolower="loadMore" style="height: {{listHeight}}px;" enable-flex="true">
+      <view class="list-empty" wx:if="{{!loading && visibleVideos.length === 0 && maintenanceMode}}">
+        <text class="list-empty-title">榜单维护中</text>
+        <text class="list-empty-desc">正在更新内容，请稍后再试～</text>
+      </view>
+      <view class="list-empty" wx:elif="{{!loading && visibleVideos.length === 0}}">
+        <text class="list-empty-title">暂无数据</text>
+        <text class="list-empty-desc">换个关键词或时间范围试试</text>
+      </view>
+      <checkbox-group bindchange="toggleSelection" wx:else>
+        <block wx:for="{{visibleVideos}}" wx:key="index">
+          <view class="video-item rank-item-{{index < 3 ? index + 1 : ''}} {{batchMode && item.checked ? 'card-selected' : ''}}" id="video-item-{{index}}">
+            <view class="checkbox-container" wx:if="{{batchMode}}">
+              <checkbox value="{{index}}" checked="{{item.checked}}" color="#fda085"/>
+            </view>
+            <view class="history-item {{batchMode ? 'history-item-batch' : ''}}" bindtap="onItemTap" bindlongpress="showRefreshConfirm" data-index="{{index}}" data-url="{{item.video_url}}" data-cover="{{item.cover_url}}" data-videoid="{{item.video_id}}" data-title="{{item.title}}">
+              <view class="cover-container">
+                <view class="cover-rank medal medal-{{index + 1}}" wx:if="{{index < 3}}"><text class="medal-num">{{index + 1}}</text></view>
+                <view class="cover-rank rank-plain" wx:else><text class="rank-plain-num">{{index + 1}}</text></view>
+                <view class="new-badge-cover" wx:if="{{item.is_new}}">NEW</view>
+                <view class="platform-badge-cover">{{item.platform}}</view>
+                <image class="cover-image" src="{{item.cover_url}}" mode="aspectFill" binderror="onImageErrorCover" data-index="{{index}}"></image>
+                <view class="cover-overlay"></view>
+                <view class="play-button" wx:if="{{item.showItem}}">
+                  <image class="play-icon" mode="aspectFit"></image>
+                </view>
+                <video wx:if="{{!item.loaded}}" id="hiddenVideo-{{item.video_id}}" src="{{item.video_url}}" hidden="{{true}}" autoplay="{{false}}" bindloadedmetadata="onVideoLoadedMetadata" binderror="onVideoError" data-video-id="{{item.video_id}}"></video>
+              </view>
+              <view class="content">
+                <view class="title-with-copy">
+                  <view class="title" user-select>{{item.title}}</view>
+                  <image class="copy-button" src="../../images/copy-icon.png" catchtap="copyTitle" data-title="{{item.title}}" data-video-id="{{item.video_id}}" wx:if="{{!batchMode}}"></image>
+                </view>
+                <view class="actions">
+                  <text class="heat-inline">🔥 {{item.query_count}}</text>
+                  <view class="actions-spacer"></view>
+                  <button class="refresh-button" catchtap="RefreshVideo" data-video-id="{{item.video_id}}" data-platform="{{item.platform}}" wx:if="{{item.loaded && !item.showItem}}" disabled="{{batchMode}}">重新获取</button>
+                  <button class="action-button" catchtap="copyCoverUrl" data-cover-url="{{item.cover_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">复制封面</button>
+                  <button class="action-button" catchtap="copyVideoUrl" data-video-url="{{item.video_url}}" data-video-id="{{item.video_id}}" wx:if="{{item.loaded && item.showItem}}" disabled="{{batchMode}}">复制视频</button>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </checkbox-group>
+      <view class="list-footer" wx:if="{{loading}}">
+        <text class="list-footer-text list-footer-loading">加载中...</text>
+      </view>
+      <view class="list-footer list-footer-tip" wx:if="{{!loading && noMoreData && visibleVideos.length > 0}}">
+        <text class="list-footer-text">{{noMoreDataText}}</text>
+      </view>
+      <view class="batch-mode-spacer" wx:if="{{batchMode}}"></view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 右下角批量入口 FAB（非编辑态显示） -->
+<view class="fab" wx:if="{{!batchMode}}" bindtap="toggleBatchMode">
+  <text class="fab-text">批量</text>
+</view>
+
+<!-- 编辑态吸底操作栏 -->
+<view class="batch-bottom-bar {{batchMode ? 'batch-bottom-bar-active' : ''}}">
+  <view class="batch-bar-top">
+    <text class="batch-selected-summary">已选择 {{selectedVideos.length}} 个素材</text>
+    <view class="batch-close-btn" bindtap="toggleBatchMode">×</view>
+  </view>
+  <view class="batch-bottom-inner">
+    <scroll-view scroll-x="true" class="batch-bottom-actions" enable-flex="true">
+      <view class="batch-bottom-row">
+        <button class="batch-bottom-btn" bindtap="selectAll">全选</button>
+        <button class="batch-bottom-btn" bindtap="clearSelection">清空</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyTitles">复制标题</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyCoverUrls">复制封面</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyVideoUrls">复制视频</button>
+        <button class="batch-bottom-btn primary" bindtap="batchCopyAll">复制全部</button>
+      </view>
+    </scroll-view>
+  </view>
+</view>

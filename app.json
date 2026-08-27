@@ -1,10 +1,11 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/videoPlayer/videoPlayer"
+    "pages/videoPlayer/videoPlayer",
+    "pages/questions/questions"
   ],
   "window": {
-  "navigationBarTitleText": "MiniParse"
+  "navigationBarTitleText": "mini-parse"
   },
   "lazyCodeLoading": "requiredComponents",
   "style": "v2"

@@ -1,0 +1,115 @@
+<view class="container">
+  <!-- 顶部整体渐变区：包含导航头、头像、昵称、历史记录、日期筛选 -->
+  <view class="top-gradient-container">
+    <view class="custom-nav" style="height: {{statusBarHeight + navBarHeight}}px;">
+      <view class="nav-title" style="margin-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+        <image class="nav-title-img" src="../../images/title-users.png" mode="heightFix" />
+      </view>
+    </view>
+    
+    <view class="user-header-section">
+      <view class="user-profile-header">
+        <view class="user-brief">
+          <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+            <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onImageError" />
+          </button>
+          <view class="nickname-container">
+            <input type="nickname" class="nickname-input" value="{{userInfo.nickName}}" placeholder="取个好听的名字吧" bindblur="onNicknameChange" bindconfirm="onNicknameChange" />
+          </view>
+        </view>
+        <view class="storage-stats" bindtap="navigateToQuestions">
+          <text class="storage-info">{{searchHistoryCount}}/{{storageLimit}}</text>
+          <image src="../../images/question-icon.png" class="question-icon"></image>
+        </view>
+      </view>
+
+      <view class="search-history-controls">
+        <view class="search-header">
+          <text class="search-subtitle">我的解析记录</text>
+        </view>
+        <view class="search-bar">
+          <view class="search-input-container">
+            <input class="search-input" placeholder="搜记录" value="{{inputValue}}" bindinput="onSearchInput"/>
+            <button class="clear-button" wx:if="{{inputValue}}" bindtap="onClearSearch"><text class="clear-text">×</text></button>
+          </view>
+          <button class="search-button" bindtap="onSearchButtonTap"><image src="../../images/search-icon.png" class="search-icon-img" /></button>
+        </view>
+        <view class="tab-bar">
+          <scroll-view scroll-x="true" class="scroll-container" enable-flex="true">
+            <view class="tab-row">
+              <view class="tab-item {{currentPeriod === 'all' ? 'active' : ''}}" bindtap="switchPeriod" data-period="all">全部</view>
+              <view class="tab-item {{currentPeriod === '90days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="90days">近90天</view>
+              <view class="tab-item {{currentPeriod === '60days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="60days">近60天</view>
+              <view class="tab-item {{currentPeriod === '30days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="30days">近30天</view>
+              <view class="tab-item {{currentPeriod === '7days' ? 'active' : ''}}" bindtap="switchPeriod" data-period="7days">近7天</view>
+              <view class="tab-item {{currentPeriod === 'yesterday' ? 'active' : ''}}" bindtap="switchPeriod" data-period="yesterday">昨天</view>
+              <view class="tab-item {{currentPeriod === 'today' ? 'active' : ''}}" bindtap="switchPeriod" data-period="today">今天</view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <scroll-view scroll-y class="history-list {{batchMode ? 'history-list-batch' : ''}}" bindscrolltolower="loadMore" enable-flex="true">
+    <checkbox-group bindchange="toggleSelection">
+      <view class="grid-container">
+        <block wx:for="{{visibleVideos}}" wx:key="index">
+          <view class="grid-item {{batchMode && item.checked ? 'item-selected' : ''}}" id="video-item-{{index}}">
+            <view class="checkbox-container" wx:if="{{batchMode}}">
+              <checkbox value="{{index}}" checked="{{item.checked}}" color="#fda085" />
+            </view>
+            <view class="grid-card" bindtap="onItemTap" data-url="{{item.video_url}}" data-cover="{{item.cover_url}}" data-videoid="{{item.video_id}}" data-title="{{item.title}}" data-index="{{index}}" bindlongpress="showDeleteConfirm">
+              <view class="cover-wrapper">
+                <image class="grid-cover" src="{{item.cover_url}}" mode="aspectFill" binderror="onImageErrorCover" data-index="{{index}}"></image>
+                <view class="grid-platform-badge">{{item.platform}}</view>
+                <view class="grid-play-icon" wx:if="{{item.showItem}}"></view>
+              </view>
+              <view class="grid-info">
+                <view class="grid-title" user-select>{{item.title || '无标题'}}</view>
+                <view class="grid-meta">
+                  <text class="grid-heat">✨ {{item.heat || 0}}</text>
+                  <text class="grid-time">{{item.save_time}}</text>
+                </view>
+              </view>
+            </view>
+            <!-- 隐藏的 video 标签 -->
+            <video wx:if="{{!item.loaded}}" id="hiddenVideo-{{item.video_id}}" src="{{item.video_url}}" hidden="{{true}}" autoplay="{{false}}" bindloadedmetadata="onVideoLoadedMetadata" binderror="onVideoError" data-video-id="{{item.video_id}}"></video>
+          </view>
+        </block>
+      </view>
+    </checkbox-group>
+    <view class="list-footer" wx:if="{{loading}}">
+      <text class="list-footer-text list-footer-loading">加载中...</text>
+    </view>
+    <view class="list-footer list-footer-tip" wx:if="{{!loading && noMoreData}}">
+      <text class="list-footer-text">没有更多数据了</text>
+    </view>
+    <view class="batch-mode-spacer" wx:if="{{batchMode}}"></view>
+  </scroll-view>
+</view>
+
+<!-- 右下角批量入口 FAB（非编辑态显示） -->
+<view class="fab" wx:if="{{!batchMode}}" bindtap="toggleBatchMode">
+  <text class="fab-text">批量</text>
+</view>
+
+<!-- 编辑态吸底操作栏 -->
+<view class="batch-bottom-bar {{batchMode ? 'batch-bottom-bar-active' : ''}}">
+  <view class="batch-bar-top">
+    <text class="batch-selected-summary">已选择 {{selectedVideos.length}} 个记录</text>
+    <view class="batch-close-btn" bindtap="toggleBatchMode">×</view>
+  </view>
+  <view class="batch-bottom-inner">
+    <scroll-view scroll-x="true" class="batch-bottom-actions" enable-flex="true">
+      <view class="batch-bottom-row">
+        <button class="batch-bottom-btn" bindtap="selectAll">全选</button>
+        <button class="batch-bottom-btn" bindtap="clearSelection">清空</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyTitles">复制标题</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyCoverUrls">复制封面</button>
+        <button class="batch-bottom-btn secondary" bindtap="batchCopyVideoUrls">复制视频</button>
+        <button class="batch-bottom-btn primary" bindtap="batchCopyAll">复制全部</button>
+        <button class="batch-bottom-btn danger" bindtap="confirmBatchDelete">删除记录</button>
+      </view>
+    </scroll-view>
+  </view>
+</view>
