@@ -1,77 +1,3 @@
-// 生成复杂原文
-// 功能：生成指定长度的随机字母字符串（包含大小写字母）
-function generateComplexText(length = 32) {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-
-// Vigenère密码加密函数
-// 功能：使用维吉尼亚密码（Vigenère cipher）对文本进行加密
-function vigenereEncrypt(text, key) {
-  let encrypted = '';
-  let keyIndex = 0;
-  for (let i = 0; i < text.length; i++) {
-      let char = text.charAt(i);
-      if (char.match(/[a-zA-Z]/)) {
-          let shift = char === char.toUpperCase() ? 65 : 97;
-          let keyChar = key.charAt(keyIndex % key.length);
-          let keyShift = keyChar.toLowerCase().charCodeAt(0) - 97;
-          encrypted += String.fromCharCode((char.charCodeAt(0) - shift + keyShift) % 26 + shift);
-          keyIndex++;
-      } else {
-          encrypted += char;
-      }
-  }
-  return encrypted;
-}
-
-// Vigenère密码解密函数
-// 功能：使用维吉尼亚密码对加密文本进行解密
-function vigenereDecrypt(text, key) {
-  let decrypted = '';
-  let keyIndex = 0;
-  for (let i = 0; i < text.length; i++) {
-      let char = text.charAt(i);
-      if (char.match(/[a-zA-Z]/)) {
-          let shift = char === char.toUpperCase() ? 65 : 97;
-          let keyChar = key.charAt(keyIndex % key.length);
-          let keyShift = keyChar.toLowerCase().charCodeAt(0) - 97;
-          decrypted += String.fromCharCode((char.charCodeAt(0) - shift - keyShift + 26) % 26 + shift);
-          keyIndex++;
-      } else {
-          decrypted += char;
-      }
-  }
-  return decrypted;
-}
-
-// 功能：将数字字符串转换为字母字符串
-function timestampToLetters(timestamp) {
-  const digitsToLetters = 'abcdefghijklmnopqrstuvwxyz'; // 字母表
-  let result = '';
-  for (let i = 0; i < timestamp.length; i++) {
-      let digit = timestamp.charAt(i);
-      // 确保是数字字符并在0到25之间
-      if (digit >= '0' && digit <= '9') {
-          let index = parseInt(digit, 10); // 将字符转换为数字
-          if (index >= 0 && index < digitsToLetters.length) {
-              result += digitsToLetters[index]; // 映射到字母
-          } else {
-              // 处理超出范围的数字，如果需要的话
-              result += '?'; // 或者抛出错误
-          }
-      } else {
-          // 处理非数字字符，如果需要的话
-          result += '?'; // 或者抛出错误
-      }
-  }
-  return result;
-}
-
 // 提取URL
 // 功能：从文本中提取第一个 URL
 function extractUrl(text) {
@@ -196,10 +122,6 @@ async function refreshVideo(videoId, platform, data, updateDataCallback) {
 
 
 export { 
-  generateComplexText, 
-  vigenereEncrypt, 
-  vigenereDecrypt, 
-  timestampToLetters,
   extractUrl,
   updateRankingVideos,
   updateVideoData,
